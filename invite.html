@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>You're Invited! 🎉</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #0f0f0f;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      font-family: 'Georgia', serif;
+      color: white;
+      text-align: center;
+    }
+    .cake { font-size: 80px; animation: bounce 1s infinite alternate; }
+    @keyframes bounce {
+      from { transform: translateY(0); }
+      to   { transform: translateY(-15px); }
+    }
+    h1 { font-size: 2rem; margin: 20px 0 10px; letter-spacing: 2px; }
+    p  { color: #aaa; font-size: 1rem; margin-bottom: 30px; }
+    .bar-bg {
+      width: 260px; height: 6px;
+      background: #333; border-radius: 10px; overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, #f9a825, #e53935);
+      border-radius: 10px;
+      animation: fill 3s linear forwards;  /* ← change 3s to adjust delay */
+    }
+    @keyframes fill { to { width: 100%; } }
+    .note { margin-top: 20px; font-size: 0.85rem; color: #555; }
+  </style>
+</head>
+<body>
+  <div class="cake">🎂</div>
+  <h1>You're Invited! for Mahilan's Birthday</h1>
+  <p>Taking you to the venue...</p>
+  <div class="bar-bg"><div class="bar-fill"></div></div>
+  <div class="note">Redirecting in 3 seconds</div>
+
+  <script>
+    // ← paste your Google Maps URL here
+    const destination = "12.966962, 80.253182";
+    setTimeout(() => {
+      window.location.href =
+        `https://www.google.com/maps/dir/?api=1&destination=${destination}`;
+    }, 3000);
+  </script>
+</body>
+</html>
