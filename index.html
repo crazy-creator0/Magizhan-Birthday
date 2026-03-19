@@ -40,18 +40,31 @@
 </head>
 <body>
   <div class="cake">🎂</div>
-  <h1>You're Invited! for Mahilan's Birthday</h1>
+  <h1>You're Invited! for Magizhan's Birthday</h1>
   <p>Taking you to the venue...</p>
   <div class="bar-bg"><div class="bar-fill"></div></div>
-  <div class="note">Redirecting in 3 seconds</div>
+<div class="note" id="msg" style="font-size:20px; color:blue;">
+  Redirecting in 3 seconds
+</div>
 
   <script>
-    // ← paste your Google Maps URL here
     const destination = "12.966962, 80.253182";
     setTimeout(() => {
       window.location.href =
         `https://www.google.com/maps/dir/?api=1&destination=${destination}`;
     }, 3000);
+    let count = 3;
+
+let timer = setInterval(function() {
+  count--;
+
+  document.getElementById("msg").innerText = 
+    "Redirecting in " + count + " seconds";
+
+  if (count === 0) {
+    clearInterval(timer);
+  }
+}, 1000);
   </script>
 </body>
 </html>
