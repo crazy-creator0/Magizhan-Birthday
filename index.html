@@ -215,32 +215,42 @@
       goToMaps();
     }
 
-    // Rapido Logic (App Intent)
-    function bookRapido() {
-      clearInterval(timer); // Stop auto-redirect if they click a button
-      const isAndroid = /android/i.test(navigator.userAgent || navigator.vendor || window.opera);
+    // Unified App Opener (Smart Fallback for both Android & iOS)
+    function tryOpenApp(deepLink, storeLink) {
+      const start = Date.now();
       
-      if (isAndroid) {
-        const intentUrl = "intent://#Intent;package=com.rapido.passenger;end";
-        window.location.href = intentUrl;
-        
-        // Fallback to Play Store if app doesn't open
-        setTimeout(() => {
-          if (document.visibilityState !== 'hidden') {
-            window.location.href = "https://play.google.com/store/apps/details?id=com.rapido.passenger";
-          }
-        }, 1500);
-      } else {
-        // Fallback for iOS
-        window.location.href = "https://apps.apple.com/in/app/rapido-bike-taxi-auto/id1192561131";
-      }
+      const fallbackTimer = setTimeout(() => {
+        // If time passed is less than 2.5s, it means the app didn't open and browser is still active
+        if (Date.now() - start < 2500) {
+          window.location.href = storeLink;
+        }
+      }, 2000);
+
+      const clearFallback = () => clearTimeout(fallbackTimer);
+      window.addEventListener('visibilitychange', () => { if (document.hidden) clearFallback(); });
+      window.addEventListener('pagehide', clearFallback);
+      window.addEventListener('blur', clearFallback);
+
+      window.location.href = deepLink;
     }
 
-    // Uber Logic (Universal Link with Coordinates)
+    // Rapido Logic
+    function bookRapido() {
+      clearInterval(timer); // Stop auto-redirect
+      const isAndroid = /android/i.test(navigator.userAgent || navigator.vendor || window.opera);
+      
+      const storeUrl = isAndroid 
+        ? "https://play.google.com/store/apps/details?id=com.rapido.passenger" 
+        : "https://apps.apple.com/in/app/rapido-bike-taxi-auto/id1192561131";
+        
+      tryOpenApp("rapido://", storeUrl);
+    }
+
+    // Uber Logic
     function bookUber() {
       clearInterval(timer); // Stop auto-redirect
-      const uberUrl = `https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=${destLat}&dropoff[longitude]=${destLng}`;
-      window.location.href = uberUrl;
+      // Uber's official Universal Link is the safest. It bypasses intent restrictions completely!
+      window.location.href = `https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=${destLat}&dropoff[longitude]=${destLng}`;
     }
   </script>
 </body>
