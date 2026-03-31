@@ -1,75 +1,203 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>You're Invited! 🎉</title>
+  <title>Magizhan's Birthday 🎉</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --rapido: #f9c900;
+      --uber: #000000;
+      --maps: #4285F4;
+      --text-main: #2d3748;
+      --text-muted: #718096;
+    }
+
+    * { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+      font-family: 'Poppins', sans-serif;
+    }
+
     body {
-      background: #0f0f0f;
+      /* Festive warm gradient */
+      background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
-      font-family: 'Georgia', serif;
-      color: white;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 24px;
+      padding: 40px 30px;
+      width: 100%;
+      max-width: 400px;
       text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      transform: translateY(0);
+      animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .cake { font-size: 80px; animation: bounce 1s infinite alternate; }
-    @keyframes bounce {
-      from { transform: translateY(0); }
-      to { transform: translateY(-15px); }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-    h1 { font-size: 2rem; margin: 20px 0 10px; letter-spacing: 2px; }
-    p { color: #aaa; font-size: 1rem; margin-bottom: 30px; }
-    .bar-bg {
-      width: 260px; height: 6px;
-      background: #333; border-radius: 10px; overflow: hidden;
+
+    .cake-container {
+      font-size: 70px;
+      margin-bottom: 10px;
+      display: inline-block;
+      animation: gentleBounce 2s infinite ease-in-out;
     }
-    .bar-fill {
-      height: 100%; width: 0%;
-      background: linear-gradient(90deg, #f9a825, #e53935);
-      border-radius: 10px;
-      animation: fill 10s linear forwards;
+
+    @keyframes gentleBounce {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-10px) scale(1.05); }
     }
-    @keyframes fill { to { width: 100%; } }
-    .note { margin-top: 20px; font-size: 0.85rem; color: #555; }
+
+    h1 { 
+      color: var(--text-main);
+      font-size: 1.6rem; 
+      font-weight: 700;
+      margin-bottom: 8px; 
+    }
+
+    p.subtitle { 
+      color: var(--text-muted); 
+      font-size: 0.95rem; 
+      margin-bottom: 25px; 
+      line-height: 1.5;
+    }
+
+    /* Progress Bar UI */
+    .progress-container {
+      background: #edf2f7;
+      border-radius: 12px;
+      height: 8px;
+      width: 100%;
+      overflow: hidden;
+      margin-bottom: 15px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #FF6B6B, #FF8E53);
+      border-radius: 12px;
+      animation: fillBar 10s linear forwards;
+    }
+
+    @keyframes fillBar { 
+      to { width: 100%; } 
+    }
+
+    .timer-text { 
+      font-size: 0.9rem; 
+      color: #FF6B6B; 
+      font-weight: 600;
+      margin-bottom: 30px;
+      animation: pulseText 1.5s infinite;
+    }
+
+    @keyframes pulseText {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    /* Modern Buttons */
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 20px; 
+      border: none; 
+      border-radius: 12px; 
+      cursor: pointer; 
+      font-weight: 600; 
+      font-size: 1rem;
+      transition: all 0.2s ease;
+      width: 100%;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn-uber { background: var(--uber); color: white; }
+    .btn-rapido { background: var(--rapido); color: black; }
+    .btn-maps { background: #f0f4f8; color: var(--maps); border: 1px solid #d9e2ec; }
+
+    /* Icons inside buttons */
+    .btn-icon { font-size: 1.2rem; }
+
   </style>
 </head>
 <body>
-  <div class="cake">🎂</div>
-  <h1>You're Invited! for Magizhan's Birthday</h1>
-  <p>Taking you to the venue...</p>
-  <div class="bar-bg"><div class="bar-fill"></div></div>
-  
-  <div class="note" id="msg" style="font-size:20px; color:blue;">
-    Redirecting in 10 seconds
-  </div>
-  
-  <div style="margin-top:20px;">
-    <button onclick="bookRapido()"
-      style="padding:10px 20px; margin:5px; border:none; border-radius:5px; background:#ffcc00; cursor:pointer;">
-      🚀 Book Rapido
-    </button>
-    <button onclick="skipNow()"
-      style="padding:10px 20px; margin:5px; border:none; border-radius:5px; background:#00c853; color:white; cursor:pointer;">
-      ⏩ Skip Waiting
-    </button>
+
+  <div class="card">
+    <div class="cake-container">🎂</div>
+    <h1>Magizhan's Birthday!</h1>
+    <p class="subtitle">Join the celebration! We are navigating you to the party venue.</p>
+    
+    <div class="progress-container">
+      <div class="progress-fill"></div>
+    </div>
+    
+    <div class="timer-text" id="msg">
+      Redirecting in 10 seconds...
+    </div>
+    
+    <div class="btn-group">
+      <!-- Uber Button -->
+      <button onclick="bookUber()" class="btn btn-uber">
+        <span class="btn-icon">🚗</span> Book with Uber
+      </button>
+
+      <!-- Rapido Button -->
+      <button onclick="bookRapido()" class="btn btn-rapido">
+        <span class="btn-icon">🛵</span> Open Rapido
+      </button>
+      
+      <!-- Skip/Maps Button -->
+      <button onclick="skipNow()" class="btn btn-maps">
+        <span class="btn-icon">🗺️</span> Open Google Maps
+      </button>
+    </div>
   </div>
 
   <script>
-    const destination = "12.966962,80.253182";
+    // Venue Coordinates
+    const destLat = "12.966962";
+    const destLng = "80.253182";
     let count = 10;
 
-    // Initial text
-    document.getElementById("msg").innerText = "Redirecting in " + count + " seconds";
+    const msgElement = document.getElementById("msg");
+    msgElement.innerText = `Redirecting in ${count} seconds...`;
 
-    // Countdown timer
+    // Countdown timer logic
     let timer = setInterval(function () {
       count--;
-      document.getElementById("msg").innerText = "Redirecting in " + count + " seconds";
+      msgElement.innerText = `Redirecting in ${count} seconds...`;
       if (count <= 0) {
         clearInterval(timer);
         goToMaps();
@@ -78,38 +206,41 @@
 
     // Redirect to Google Maps
     function goToMaps() {
-      window.location.href = `https://www.google.com/maps/dir/?api=1&destination=${destination}`;
+      window.location.href = `https://www.google.com/maps/dir/?api=1&destination=${destLat},${destLng}`;
     }
 
-    // Skip button
+    // Skip wait time
     function skipNow() {
+      clearInterval(timer);
       goToMaps();
     }
 
-    // FIXED Rapido button - Now properly opens the app if installed
+    // Rapido Logic (App Intent)
     function bookRapido() {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (position) {
-          // Get current location as pickup
-          let lat = position.coords.latitude;
-          let lon = position.coords.longitude;
-
-          // Correct intent to launch Rapido app directly
-          const intentUrl = `intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=com.rapido.passenger;end`;
-          
-          window.location.href = intentUrl;
-
-          // Fallback to Play Store ONLY if app is not installed
-          setTimeout(() => {
+      clearInterval(timer); // Stop auto-redirect if they click a button
+      const isAndroid = /android/i.test(navigator.userAgent || navigator.vendor || window.opera);
+      
+      if (isAndroid) {
+        const intentUrl = "intent://#Intent;package=com.rapido.passenger;end";
+        window.location.href = intentUrl;
+        
+        // Fallback to Play Store if app doesn't open
+        setTimeout(() => {
+          if (document.visibilityState !== 'hidden') {
             window.location.href = "https://play.google.com/store/apps/details?id=com.rapido.passenger";
-          }, 1500);
-
-        }, function () {
-          alert("Location access denied ❌");
-        });
+          }
+        }, 1500);
       } else {
-        alert("Geolocation not supported ❌");
+        // Fallback for iOS
+        window.location.href = "https://apps.apple.com/in/app/rapido-bike-taxi-auto/id1192561131";
       }
+    }
+
+    // Uber Logic (Universal Link with Coordinates)
+    function bookUber() {
+      clearInterval(timer); // Stop auto-redirect
+      const uberUrl = `https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=${destLat}&dropoff[longitude]=${destLng}`;
+      window.location.href = uberUrl;
     }
   </script>
 </body>
