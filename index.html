@@ -481,6 +481,7 @@
       goToMaps();
     }
 
+    // ── Bottom Sheet ───────────────────────────────────────────────────
     function openBottomSheet() {
       stopTimer();
       msgEl.innerText = "Awaiting your selection...";
@@ -494,6 +495,7 @@
       document.getElementById('bottomSheet').classList.remove('active');
     }
 
+    // ── Rapido Long-Press Logic ────────────────────────────────────────
     let pressTimer = null;
     let isGeekMode = false;
     const HOLD_MS  = 1200;
@@ -511,6 +513,7 @@
     }
 
     function endRapidoPress(e) {
+      // Always stop propagation so touch doesn't double-fire
       e && e.stopPropagation();
 
       clearTimeout(pressTimer);
@@ -519,6 +522,7 @@
       const wasGeek = isGeekMode;
       isGeekMode = false;
 
+      // Reset visual after brief pause
       setTimeout(() => {
         btn.classList.remove('geek-mode-active');
         document.getElementById('rapidoText').innerText = "Rapido";
@@ -533,6 +537,7 @@
       isGeekMode = false;
     }
 
+    // Attach listeners to Rapido button properly
     const rapidoBtn = document.getElementById('rapidoBtn');
     rapidoBtn.addEventListener('mousedown',   startRapidoPress);
     rapidoBtn.addEventListener('mouseup',     endRapidoPress);
@@ -541,10 +546,17 @@
     rapidoBtn.addEventListener('touchend',    endRapidoPress);
     rapidoBtn.addEventListener('touchcancel', cancelRapidoPress);
 
+    // ── App Deep-Link Logic ────────────────────────────────────────────
     function bookRide(app) {
+      // For rapido we handle sheet closing manually with a delay
       if (app !== 'rapido') setTimeout(closeBottomSheet, 250);
 
       if (app === 'uber') {
+        /*
+         * Uber universal deep-link — works on both Android & iOS.
+         * Uses the official /ul/ endpoint which the Uber app intercepts.
+         * Fallback: Uber web (auto-prompts install if app missing).
+         */
         const uberUrl =
           `https://m.uber.com/ul/?action=setPickup` +
           `&pickup=my_location` +
@@ -560,7 +572,13 @@
       }
 
       else if (app === 'ola') {
-
+        /*
+         * Ola deeplink:
+         *   Android – use olacabs:// URI scheme directly.
+         *             intent:// is unreliable across MIUI / One UI browsers.
+         *   iOS     – same scheme supported.
+         *   Web     – book.olacabs.com with destination pre-filled.
+         */
         const olaScheme =
           `olacabs://app/launch?lat=${DEST_LAT}&lng=${DEST_LNG}` +
           `&category_id=1`;             // 1 = mini; auto-selects cheapest
@@ -585,6 +603,11 @@
       }
 
       else if (app === 'rapido-tasker') {
+        /*
+         * Geek / Tasker mode — long-press only.
+         * Fires a Tasker named task via its documented intent scheme.
+         * Only works on Android with Tasker installed.
+         */
         if (!isAndroid) {
           alert("Tasker automation is only available on Android! 🤖");
           return;
@@ -600,6 +623,11 @@
       }
     }
 
+    /*
+     * showRapidoSheet — slides up the step-by-step instruction card.
+     * App is NOT opened yet. User reads steps, copies coords, THEN taps
+     * "Got it" which closes the sheet and launches Rapido.
+     */
     function showRapidoSheet() {
       document.getElementById('coordDisplay').innerText = `${DEST_LAT}, ${DEST_LNG}`;
       document.getElementById('rapidoBackdrop').classList.add('active');
@@ -610,10 +638,39 @@
       document.getElementById('rapidoSheet').classList.remove('show');
       document.getElementById('rapidoBackdrop').classList.remove('active');
 
-      const rapidoStore = isIOS
-        ? "https://apps.apple.com/in/app/rapido-bike-taxi-auto-cabs/id1198464606"
-        : "https://play.google.com/store/apps/details?id=com.rapido.passenger";
-      setTimeout(() => openWithStoreFallback("rapido://", rapidoStore), 300);
+      // Launch Rapido after sheet animates out
+      setTimeout(() => launchRapidoApp(), 300);
+    }
+
+    function launchRapidoApp() {
+      const playStore = "https://play.google.com/store/apps/details?id=com.rapido.passenger";
+      const appStore  = "https://apps.apple.com/in/app/rapido-bike-taxi-auto-cabs/id1198464606";
+
+      if (isIOS) {
+        // iOS: try custom scheme, fall back to App Store
+        openWithStoreFallback("rapido://", appStore);
+
+      } else if (isAndroid) {
+        /*
+         * Android: intent:// with package= is the ONLY reliable way to launch
+         * a specific app from a browser when the app has no registered custom
+         * URI scheme. Chrome, Samsung Browser, Firefox all handle this correctly.
+         *
+         * S.browser_fallback_url is used if the package is not installed.
+         * launchFlags=0x10000000 = FLAG_ACTIVITY_NEW_TASK (required).
+         */
+        const fallbackUrl = encodeURIComponent(playStore);
+        window.location.href =
+          `intent://#Intent;` +
+          `package=com.rapido.passenger;` +
+          `launchFlags=0x10000000;` +
+          `S.browser_fallback_url=${fallbackUrl};` +
+          `end`;
+
+      } else {
+        // Desktop / unknown: just open Play Store page
+        window.open(playStore, "_blank");
+      }
     }
 
     function copyCoords() {
@@ -646,6 +703,7 @@
       let fallbackTimer;
 
       function onHide() {
+        // App launched → page went to background → cancel store redirect
         clearTimeout(fallbackTimer);
         document.removeEventListener('visibilitychange', onHide);
       }
