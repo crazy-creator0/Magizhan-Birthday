@@ -20,7 +20,7 @@
       box-sizing: border-box; 
       font-family: 'Poppins', sans-serif;
       -webkit-tap-highlight-color: transparent;
-      -webkit-touch-callout: none; /* Prevent default long-press context menu */
+      -webkit-touch-callout: none;
       user-select: none;
     }
 
@@ -68,8 +68,7 @@
     p.subtitle { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 25px; line-height: 1.5; }
 
     .progress-container { background: #edf2f7; border-radius: 12px; height: 8px; width: 100%; overflow: hidden; margin-bottom: 15px; }
-    .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 12px; animation: fillBar 10s linear forwards; }
-    @keyframes fillBar { to { width: 100%; } }
+    .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 12px; transition: width 1s linear; }
     
     .timer-text { font-size: 0.9rem; color: var(--primary); font-weight: 600; margin-bottom: 30px; animation: pulseText 1.5s infinite; }
     @keyframes pulseText { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
@@ -144,6 +143,8 @@
       display: flex; align-items: center; padding: 16px;
       background: #f7fafc; border-radius: 16px; border: 1px solid #edf2f7;
       cursor: pointer; transition: all 0.2s;
+      /* Prevent ghost click delay on mobile */
+      touch-action: manipulation;
     }
     .app-item:active { background: #e2e8f0; transform: scale(0.98); }
     
@@ -152,35 +153,161 @@
       align-items: center; justify-content: center; margin-right: 15px;
       overflow: hidden; background: #fff;
       box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-      transition: all 0.3s ease;
     }
     
-    .real-logo {
-      width: 100%; height: 100%; object-fit: cover;
-    }
+    .real-logo { width: 100%; height: 100%; object-fit: cover; }
 
     .fallback-icon {
-      display: flex; align-items: center; justify-content: center;
+      display: none; align-items: center; justify-content: center;
       width: 100%; height: 100%; font-size: 1.5rem; font-weight: bold;
     }
-    .icon-uber .fallback-icon { background: #000; color: #fff; }
-    .icon-ola .fallback-icon { background: #D5EC54; color: #000; }
-    .icon-rapido .fallback-icon { background: #F9C900; color: #000; }
+    .icon-uber .fallback-icon { background: #000; color: #fff; border-radius: 12px; }
+    .icon-ola .fallback-icon { background: #D5EC54; color: #000; border-radius: 12px; }
+    .icon-rapido .fallback-icon { background: #F9C900; color: #000; border-radius: 12px; }
     
     .app-details { flex: 1; text-align: left; }
     .app-name { font-weight: 600; color: var(--text-main); font-size: 1rem; transition: color 0.3s; }
     .app-desc { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
     .chevron { color: #cbd5e0; font-weight: bold; }
 
-    /* Secret Mode Animation */
+    /* Secret Geek Mode */
     .geek-mode-active {
       background: #fff3e0 !important;
       border-color: #ff9800 !important;
     }
-    .geek-mode-active .app-name {
-      color: #e65100;
+    .geek-mode-active .app-name { color: #e65100; }
+
+    /* ── Rapido Instruction Sheet ────────────────────────── */
+    .rapido-sheet {
+      position: fixed;
+      bottom: -100%;
+      left: 0;
+      width: 100%;
+      background: #fff;
+      border-radius: 24px 24px 0 0;
+      padding: 22px 20px 36px;
+      z-index: 202;
+      transition: bottom 0.45s cubic-bezier(0.16,1,0.3,1);
+      box-shadow: 0 -12px 40px rgba(0,0,0,0.15);
+    }
+    .rapido-sheet.show { bottom: 0; }
+
+    .rapido-sheet .rs-handle {
+      width: 40px; height: 4px;
+      background: #e2e8f0;
+      border-radius: 4px;
+      margin: 0 auto 18px;
     }
 
+    .rapido-sheet .rs-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #1a202c;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .rapido-sheet .rs-subtitle {
+      font-size: 0.82rem;
+      color: #718096;
+      margin-bottom: 18px;
+    }
+
+    /* Steps */
+    .rs-steps { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
+    .rs-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: #f7fafc;
+      border-radius: 14px;
+      padding: 12px 14px;
+    }
+    .rs-step-num {
+      min-width: 26px; height: 26px;
+      background: #FF6B6B;
+      color: #fff;
+      border-radius: 50%;
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      margin-top: 1px;
+    }
+    .rs-step-text {
+      font-size: 0.85rem;
+      color: #2d3748;
+      line-height: 1.5;
+    }
+    .rs-step-text b { color: #1a202c; }
+    .rs-step-text .highlight {
+      display: inline-block;
+      background: #ebf8ff;
+      color: #2b6cb0;
+      border-radius: 6px;
+      padding: 1px 7px;
+      font-weight: 600;
+      font-size: 0.82rem;
+    }
+
+    /* Coordinates box */
+    .coords-box {
+      background: #1a202c;
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .coords-box .coord-val {
+      font-family: 'Courier New', monospace;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #68d391;
+      letter-spacing: 0.03em;
+      /* ALLOW text selection for manual copy */
+      user-select: text;
+      -webkit-user-select: text;
+    }
+    .coords-box .coord-label {
+      font-size: 0.68rem;
+      color: #718096;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 3px;
+    }
+
+    .copy-btn {
+      background: #FF6B6B;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      min-width: 80px;
+      touch-action: manipulation;
+      white-space: nowrap;
+      transition: background 0.2s;
+    }
+    .copy-btn:active { transform: scale(0.96); }
+    .copy-btn.copied { background: #38a169; }
+
+    .rs-dismiss {
+      background: transparent;
+      border: 2px solid #e2e8f0;
+      color: #718096;
+      border-radius: 12px;
+      padding: 11px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      touch-action: manipulation;
+    }
   </style>
 </head>
 <body>
@@ -190,18 +317,58 @@
     <h1>Magizhan's Birthday!</h1>
     <p class="subtitle">Join the celebration! We are navigating you to the party venue.</p>
     
-    <div class="progress-container"><div class="progress-fill"></div></div>
+    <div class="progress-container">
+      <div class="progress-fill" id="progressBar"></div>
+    </div>
     <div class="timer-text" id="msg">Redirecting in 10 seconds...</div>
     
     <div class="btn-group">
       <button onclick="openBottomSheet()" class="btn-primary">
         <span>🚖</span> Choose Ride App
       </button>
-      
       <button onclick="skipNow()" class="btn-secondary">
         <span>📍</span> Open Google Maps
       </button>
     </div>
+  </div>
+
+  <!-- Rapido step-by-step instruction sheet -->
+  <div class="rapido-sheet" id="rapidoSheet">
+    <div class="rs-handle"></div>
+    <div class="rs-title">🏍️ How to enter destination in Rapido</div>
+    <div class="rs-subtitle">Rapido doesn't support auto-fill — follow these 3 quick steps:</div>
+
+    <div class="rs-steps">
+      <div class="rs-step">
+        <div class="rs-step-num">1</div>
+        <div class="rs-step-text">
+          In Rapido, tap the <b>destination box</b> (top of screen that says "Where to?")
+        </div>
+      </div>
+      <div class="rs-step">
+        <div class="rs-step-num">2</div>
+        <div class="rs-step-text">
+          Tap <span class="highlight">📍 Select on map</span> (below the search bar)
+        </div>
+      </div>
+      <div class="rs-step">
+        <div class="rs-step-num">3</div>
+        <div class="rs-step-text">
+          Tap the <b>search / coordinates field</b> on the map screen and <b>paste</b> the coordinates below — it will pin the exact venue!
+        </div>
+      </div>
+    </div>
+
+    <!-- Coordinates copy box -->
+    <div class="coords-box">
+      <div>
+        <div class="coord-label">📍 Paste these coordinates</div>
+        <div class="coord-val" id="coordDisplay">12.966962, 80.253182</div>
+      </div>
+      <button class="copy-btn" id="copyBtn" onclick="copyCoords()">📋 Copy</button>
+    </div>
+
+    <button class="rs-dismiss" onclick="closeRapidoSheet()">Got it, opening Rapido →</button>
   </div>
 
   <div class="backdrop" id="backdrop" onclick="closeBottomSheet()"></div>
@@ -215,83 +382,109 @@
       <!-- Uber -->
       <div class="app-item" onclick="bookRide('uber')">
         <div class="app-icon icon-uber">
-          <img src="https://logo.clearbit.com/uber.com" alt="Uber" class="real-logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-          <div class="fallback-icon" style="display: none;">U</div>
+          <img src="https://logo.clearbit.com/uber.com" alt="Uber" class="real-logo"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="fallback-icon">U</div>
         </div>
         <div class="app-details">
           <div class="app-name">Uber</div>
           <div class="app-desc">Auto, Mini, Sedan</div>
         </div>
-        <div class="chevron">></div>
+        <div class="chevron">›</div>
       </div>
 
       <!-- Ola -->
       <div class="app-item" onclick="bookRide('ola')">
         <div class="app-icon icon-ola">
-          <img src="https://logo.clearbit.com/olacabs.com" alt="Ola" class="real-logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-          <div class="fallback-icon" style="display: none;">O</div>
+          <img src="https://logo.clearbit.com/olacabs.com" alt="Ola" class="real-logo"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="fallback-icon">O</div>
         </div>
         <div class="app-details">
           <div class="app-name">Ola Cabs</div>
           <div class="app-desc">Auto, Prime, Mini</div>
         </div>
-        <div class="chevron">></div>
+        <div class="chevron">›</div>
       </div>
 
-      <!-- MERGED Rapido (Normal Click + Secret Long Press) -->
-      <div class="app-item" id="rapidoBtn" 
-           onmousedown="startRapidoPress()" onmouseup="endRapidoPress(event)" onmouseleave="cancelRapidoPress()"
-           ontouchstart="startRapidoPress()" ontouchend="endRapidoPress(event)" ontouchcancel="cancelRapidoPress()">
-        
+      <!-- Rapido (short tap = normal, long press = Tasker) -->
+      <div class="app-item" id="rapidoBtn">
         <div class="app-icon icon-rapido">
-          <img src="https://logo.clearbit.com/rapido.bike" alt="Rapido" class="real-logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-          <div class="fallback-icon" style="display: none;">🏍️</div>
+          <img src="https://logo.clearbit.com/rapido.bike" alt="Rapido" class="real-logo"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="fallback-icon">🏍️</div>
         </div>
         <div class="app-details">
           <div class="app-name" id="rapidoText">Rapido</div>
           <div class="app-desc" id="rapidoDesc">Bike Taxi & Auto</div>
         </div>
-        <div class="chevron">></div>
+        <div class="chevron">›</div>
       </div>
-
     </div>
   </div>
 
   <script>
-    // Venue Coordinates
-    const destLat = "12.966962";
-    const destLng = "80.253182";
-    let count = 10;
-    let timer;
+    /* ─────────────────────────────────────────
+       CONFIGURE YOUR DESTINATION HERE
+    ───────────────────────────────────────── */
+    const DEST_LAT  = "12.966962";
+    const DEST_LNG  = "80.253182";
+    const DEST_NAME = "Party Venue";   // shown as dropoff label in Uber
+    /* ─────────────────────────────────────────
+       END CONFIG
+    ───────────────────────────────────────── */
 
-    const msgElement = document.getElementById("msg");
+    const isAndroid = /android/i.test(navigator.userAgent);
+    const isIOS     = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+    // ── Timer ──────────────────────────────────────────────────────────
+    let count = 10;
+    let timerInterval = null;
+    const msgEl      = document.getElementById("msg");
+    const progressEl = document.getElementById("progressBar");
 
     function startTimer() {
-      msgElement.innerText = `Redirecting in ${count} seconds...`;
-      timer = setInterval(function () {
+      count = 10;
+      progressEl.style.width = "0%";
+      msgEl.innerText = `Redirecting in ${count} seconds...`;
+
+      // Kick off CSS width animation manually each second
+      timerInterval = setInterval(() => {
         count--;
-        msgElement.innerText = `Redirecting in ${count} seconds...`;
+        const pct = ((10 - count) / 10) * 100;
+        progressEl.style.width = pct + "%";
+        msgEl.innerText = count > 0
+          ? `Redirecting in ${count} seconds...`
+          : "Opening Google Maps...";
         if (count <= 0) {
-          clearInterval(timer);
+          clearInterval(timerInterval);
           goToMaps();
         }
       }, 1000);
     }
 
+    function stopTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+
     startTimer();
 
     function goToMaps() {
-      window.location.href = `https://www.google.com/maps/dir/?api=1&destination=${destLat},${destLng}`;
+      window.location.href =
+        `https://www.google.com/maps/dir/?api=1&destination=${DEST_LAT},${DEST_LNG}`;
     }
 
     function skipNow() {
-      clearInterval(timer);
+      stopTimer();
       goToMaps();
     }
 
+    // ── Bottom Sheet ───────────────────────────────────────────────────
     function openBottomSheet() {
-      clearInterval(timer);
-      msgElement.innerText = "Awaiting your selection...";
+      stopTimer();
+      msgEl.innerText = "Awaiting your selection...";
+      progressEl.style.width = "100%";
       document.getElementById('backdrop').classList.add('active');
       document.getElementById('bottomSheet').classList.add('active');
     }
@@ -301,113 +494,203 @@
       document.getElementById('bottomSheet').classList.remove('active');
     }
 
-    // --- SECRET GEEK MODE LOGIC (LONG PRESS) ---
-    let pressTimer;
+    // ── Rapido Long-Press Logic ────────────────────────────────────────
+    let pressTimer = null;
     let isGeekMode = false;
-    const holdDuration = 1200; // 1.2 seconds hold required for Tasker
+    const HOLD_MS  = 1200;
 
     function startRapidoPress() {
       isGeekMode = false;
-      const btn = document.getElementById('rapidoBtn');
-      
       pressTimer = setTimeout(() => {
         isGeekMode = true;
-        
-        // Visual feedback when Secret Mode unlocks
+        const btn = document.getElementById('rapidoBtn');
         btn.classList.add('geek-mode-active');
         document.getElementById('rapidoText').innerText = "Tasker Activated! ⚙️";
         document.getElementById('rapidoDesc').innerText = "Zero-tap mode ready...";
-        
-        // Haptic feedback if mobile supports it
-        if(navigator.vibrate) navigator.vibrate([50, 50, 50]); 
-        
-      }, holdDuration);
+        if (navigator.vibrate) navigator.vibrate([50, 50, 50]);
+      }, HOLD_MS);
     }
 
     function endRapidoPress(e) {
+      // Always stop propagation so touch doesn't double-fire
+      e && e.stopPropagation();
+
       clearTimeout(pressTimer);
       const btn = document.getElementById('rapidoBtn');
-      
-      // Reset UI back to normal
+
+      const wasGeek = isGeekMode;
+      isGeekMode = false;
+
+      // Reset visual after brief pause
       setTimeout(() => {
         btn.classList.remove('geek-mode-active');
         document.getElementById('rapidoText').innerText = "Rapido";
         document.getElementById('rapidoDesc').innerText = "Bike Taxi & Auto";
-      }, 500);
+      }, 400);
 
-      if (isGeekMode) {
-        // Trigger Tasker Automation (Long Press success)
-        bookRide('rapido-tasker');
-      } else {
-        // Trigger Normal Rapido (Short Tap success)
-        bookRide('rapido-normal');
-      }
-      
-      // Prevent double firing on touch devices
-      if(e && e.cancelable) e.preventDefault(); 
+      bookRide(wasGeek ? 'rapido-tasker' : 'rapido');
     }
 
     function cancelRapidoPress() {
       clearTimeout(pressTimer);
       isGeekMode = false;
     }
-    // -------------------------------------------
 
-    // App Navigation Logic
+    // Attach listeners to Rapido button properly
+    const rapidoBtn = document.getElementById('rapidoBtn');
+    rapidoBtn.addEventListener('mousedown',   startRapidoPress);
+    rapidoBtn.addEventListener('mouseup',     endRapidoPress);
+    rapidoBtn.addEventListener('mouseleave',  cancelRapidoPress);
+    rapidoBtn.addEventListener('touchstart',  startRapidoPress, { passive: true });
+    rapidoBtn.addEventListener('touchend',    endRapidoPress);
+    rapidoBtn.addEventListener('touchcancel', cancelRapidoPress);
+
+    // ── App Deep-Link Logic ────────────────────────────────────────────
     function bookRide(app) {
-      const isAndroid = /android/i.test(navigator.userAgent || navigator.vendor || window.opera);
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+      setTimeout(closeBottomSheet, 250);
 
       if (app === 'uber') {
-        window.location.href = `https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=${destLat}&dropoff[longitude]=${destLng}`;
-      } 
+        /*
+         * Uber universal deep-link — works on both Android & iOS.
+         * Uses the official /ul/ endpoint which the Uber app intercepts.
+         * Fallback: Uber web (auto-prompts install if app missing).
+         */
+        const uberUrl =
+          `https://m.uber.com/ul/?action=setPickup` +
+          `&pickup=my_location` +
+          `&dropoff[latitude]=${DEST_LAT}` +
+          `&dropoff[longitude]=${DEST_LNG}` +
+          `&dropoff[nickname]=${encodeURIComponent(DEST_NAME)}`;
+        openWithStoreFallback(
+          uberUrl,
+          isAndroid
+            ? "https://play.google.com/store/apps/details?id=com.ubercab"
+            : "https://apps.apple.com/in/app/uber-request-a-ride/id368677368"
+        );
+      }
+
       else if (app === 'ola') {
-        if (isAndroid) {
-          const playStore = encodeURIComponent("https://play.google.com/store/apps/details?id=com.olacabs.customer");
-          window.location.href = `intent://app/launch?lat=${destLat}&lng=${destLng}#Intent;scheme=ola;package=com.olacabs.customer;S.browser_fallback_url=${playStore};end`;
-        } else if (isIOS) {
-          tryManualFallback("olacabs://", "https://apps.apple.com/in/app/ola-safe-and-affordable-rides/id539179365");
+        /*
+         * Ola deeplink:
+         *   Android – use olacabs:// URI scheme directly.
+         *             intent:// is unreliable across MIUI / One UI browsers.
+         *   iOS     – same scheme supported.
+         *   Web     – book.olacabs.com with destination pre-filled.
+         */
+        const olaScheme =
+          `olacabs://app/launch?lat=${DEST_LAT}&lng=${DEST_LNG}` +
+          `&category_id=1`;             // 1 = mini; auto-selects cheapest
+        const olaStore  = isIOS
+          ? "https://apps.apple.com/in/app/ola-safe-and-affordable-rides/id539179365"
+          : "https://play.google.com/store/apps/details?id=com.olacabs.customer";
+
+        if (isAndroid || isIOS) {
+          openWithStoreFallback(olaScheme, olaStore);
         } else {
-          window.open("https://book.olacabs.com/", "_blank");
+          window.open(
+            `https://book.olacabs.com/?pickup=current&dropLat=${DEST_LAT}&dropLng=${DEST_LNG}`,
+            "_blank"
+          );
         }
       }
-      else if (app === 'rapido-normal') {
-        // Normal User Click - Safe opening, no Tasker dependency
-        if (isAndroid) {
-          window.location.href = "intent://#Intent;package=com.rapido.passenger;end";
-          tryManualFallback(null, "https://play.google.com/store/apps/details?id=com.rapido.passenger", true);
-        } else if (isIOS) {
-          tryManualFallback("rapido://", "https://apps.apple.com/in/app/rapido-bike-taxi-auto/id1192561131");
-        } else {
-          window.open("https://play.google.com/store/apps/details?id=com.rapido.passenger", "_blank");
-        }
+
+      else if (app === 'rapido') {
+        /*
+         * Show step-by-step instruction sheet first.
+         * The "Got it" button (closeRapidoSheet) actually launches the app.
+         * This way user has copied coordinates BEFORE switching to Rapido.
+         */
+        showRapidoSheet();
       }
+
       else if (app === 'rapido-tasker') {
-        // GEEK MODE: Long Press triggered this!
-        if (isAndroid) {
-          const taskName = encodeURIComponent("Rapido – Go to MyHome");
-          const taskerIntent = `intent://#Intent;action=net.dinglisch.android.tasker.ACTION_TASK;S.task_name=${taskName};package=net.dinglisch.android.taskerm;end`;
-          window.location.href = taskerIntent;
-        } else {
-          alert("Tasker automation is only available on Android phones! 🤖");
+        /*
+         * Geek / Tasker mode — long-press only.
+         * Fires a Tasker named task via its documented intent scheme.
+         * Only works on Android with Tasker installed.
+         */
+        if (!isAndroid) {
+          alert("Tasker automation is only available on Android! 🤖");
+          return;
         }
+        const taskName    = encodeURIComponent("Rapido – Go to MyHome");
+        const taskerScheme =
+          `intent://#Intent;` +
+          `action=net.dinglisch.android.tasker.ACTION_TASK;` +
+          `S.task_name=${taskName};` +
+          `package=net.dinglisch.android.taskerm;` +
+          `end`;
+        window.location.href = taskerScheme;
       }
-      
-      setTimeout(closeBottomSheet, 300); 
     }
 
-    function tryManualFallback(schemeUrl, storeUrl, isAndroidIntent = false) {
-      const start = Date.now();
-      
-      setTimeout(() => {
-        if (Date.now() - start < 2500 && document.visibilityState !== 'hidden') {
+    /*
+     * showRapidoSheet — slides up the step-by-step instruction card.
+     * App is NOT opened yet. User reads steps, copies coords, THEN taps
+     * "Got it" which closes the sheet and launches Rapido.
+     */
+    function showRapidoSheet() {
+      document.getElementById('coordDisplay').innerText = `${DEST_LAT}, ${DEST_LNG}`;
+      // Also add a backdrop for the rapido sheet
+      document.getElementById('backdrop').classList.add('active');
+      document.getElementById('rapidoSheet').classList.add('show');
+    }
+
+    function closeRapidoSheet() {
+      document.getElementById('rapidoSheet').classList.remove('show');
+      document.getElementById('backdrop').classList.remove('active');
+
+      // NOW launch Rapido (after user has had time to copy coords)
+      const rapidoStore = isIOS
+        ? "https://apps.apple.com/in/app/rapido-bike-taxi-auto-cabs/id1198464606"
+        : "https://play.google.com/store/apps/details?id=com.rapido.passenger";
+      setTimeout(() => openWithStoreFallback("rapido://", rapidoStore), 300);
+    }
+
+    function copyCoords() {
+      const text = `${DEST_LAT}, ${DEST_LNG}`;
+      const btn  = document.getElementById('copyBtn');
+      const done = () => {
+        btn.innerText = '✅ Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.innerText = '📋 Copy'; btn.classList.remove('copied'); }, 2500);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done).catch(() => legacyCopy(text, done));
+      } else {
+        legacyCopy(text, done);
+      }
+    }
+
+    function legacyCopy(text, cb) {
+      const el = document.createElement('textarea');
+      el.value = text;
+      el.style.cssText = 'position:fixed;opacity:0;top:0;left:0;';
+      document.body.appendChild(el);
+      el.focus(); el.select();
+      try { document.execCommand('copy'); } catch(e) {}
+      document.body.removeChild(el);
+      if (cb) cb();
+    }
+
+    function openWithStoreFallback(appUrl, storeUrl, fallbackMs = 1800) {
+      let fallbackTimer;
+
+      function onHide() {
+        // App launched → page went to background → cancel store redirect
+        clearTimeout(fallbackTimer);
+        document.removeEventListener('visibilitychange', onHide);
+      }
+      document.addEventListener('visibilitychange', onHide);
+
+      fallbackTimer = setTimeout(() => {
+        document.removeEventListener('visibilitychange', onHide);
+        if (document.visibilityState !== 'hidden') {
           window.location.href = storeUrl;
         }
-      }, 1500);
-      
-      if (!isAndroidIntent && schemeUrl) {
-        window.location.href = schemeUrl;
-      }
+      }, fallbackMs);
+
+      window.location.href = appUrl;
     }
   </script>
 </body>
