@@ -158,6 +158,7 @@
     .icon-uber { background: #000; color: #fff; }
     .icon-ola { background: #D5EC54; color: #000; }
     .icon-rapido { background: #F9C900; color: #000; }
+    .icon-tasker { background: #ff9800; color: #fff; }
     
     .app-details { flex: 1; text-align: left; }
     .app-name { font-weight: 600; color: var(--text-main); font-size: 1rem; }
@@ -224,6 +225,16 @@
         <div class="app-details">
           <div class="app-name">Rapido</div>
           <div class="app-desc">Bike Taxi & Auto</div>
+        </div>
+        <div class="chevron">></div>
+      </div>
+
+      <!-- Rapido Tasker Automation (Geek Mode) -->
+      <div class="app-item" onclick="bookRide('rapido-tasker')">
+        <div class="app-icon icon-tasker">⚙️</div>
+        <div class="app-details">
+          <div class="app-name">Rapido (Tasker Auto)</div>
+          <div class="app-desc">Zero-tap booking (Geek Mode)</div>
         </div>
         <div class="chevron">></div>
       </div>
@@ -295,16 +306,23 @@
       }
       else if (app === 'rapido') {
         if (isAndroid) {
-          // 🔥 FIX: Removed S.browser_fallback_url to stop Chrome from forcing Play Store immediately!
-          // Only sending the package intent, fallback is handled manually below.
+          // Normal Rapido fallback logic
           window.location.href = "intent://#Intent;package=com.rapido.passenger;end";
-          
-          // Manual fallback to Play Store if app doesn't open
           tryManualFallback(null, "https://play.google.com/store/apps/details?id=com.rapido.passenger", true);
         } else if (isIOS) {
           tryManualFallback("rapido://", "https://apps.apple.com/in/app/rapido-bike-taxi-auto/id1192561131");
         } else {
           window.open("https://play.google.com/store/apps/details?id=com.rapido.passenger", "_blank");
+        }
+      }
+      else if (app === 'rapido-tasker') {
+        // 🔥 GEEK MODE: Trigger the Tasker automation task directly!
+        if (isAndroid) {
+          const taskName = encodeURIComponent("Rapido – Go to MyHome");
+          const taskerIntent = `intent://#Intent;action=net.dinglisch.android.tasker.ACTION_TASK;S.task_name=${taskName};package=net.dinglisch.android.taskerm;end`;
+          window.location.href = taskerIntent;
+        } else {
+          alert("Tasker automation is only available on Android phones! 🤖");
         }
       }
       
