@@ -20,10 +20,10 @@
     .cake { font-size: 80px; animation: bounce 1s infinite alternate; }
     @keyframes bounce {
       from { transform: translateY(0); }
-      to   { transform: translateY(-15px); }
+      to { transform: translateY(-15px); }
     }
     h1 { font-size: 2rem; margin: 20px 0 10px; letter-spacing: 2px; }
-    p  { color: #aaa; font-size: 1rem; margin-bottom: 30px; }
+    p { color: #aaa; font-size: 1rem; margin-bottom: 30px; }
     .bar-bg {
       width: 260px; height: 6px;
       background: #333; border-radius: 10px; overflow: hidden;
@@ -32,7 +32,7 @@
       height: 100%; width: 0%;
       background: linear-gradient(90deg, #f9a825, #e53935);
       border-radius: 10px;
-      animation: fill 10s linear forwards;  /* ← change 3s to adjust delay */
+      animation: fill 10s linear forwards;
     }
     @keyframes fill { to { width: 100%; } }
     .note { margin-top: 20px; font-size: 0.85rem; color: #555; }
@@ -43,77 +43,74 @@
   <h1>You're Invited! for Magizhan's Birthday</h1>
   <p>Taking you to the venue...</p>
   <div class="bar-bg"><div class="bar-fill"></div></div>
-<div class="note" id="msg" style="font-size:20px; color:blue;">
-  Redirecting in 10 seconds
-</div>
-<div style="margin-top:20px;">
-  <button onclick="bookRapido()" 
-    style="padding:10px 20px; margin:5px; border:none; border-radius:5px; background:#ffcc00; cursor:pointer;">
-    🚀 Book Rapido
-  </button>
-
-  <button onclick="skipNow()" 
-    style="padding:10px 20px; margin:5px; border:none; border-radius:5px; background:#00c853; color:white; cursor:pointer;">
-    ⏩ Skip Waiting
-  </button>
-</div>
   
-<script>
-  const destination = "12.966962,80.253182";
-  let count = 10;
+  <div class="note" id="msg" style="font-size:20px; color:blue;">
+    Redirecting in 10 seconds
+  </div>
+  
+  <div style="margin-top:20px;">
+    <button onclick="bookRapido()"
+      style="padding:10px 20px; margin:5px; border:none; border-radius:5px; background:#ffcc00; cursor:pointer;">
+      🚀 Book Rapido
+    </button>
+    <button onclick="skipNow()"
+      style="padding:10px 20px; margin:5px; border:none; border-radius:5px; background:#00c853; color:white; cursor:pointer;">
+      ⏩ Skip Waiting
+    </button>
+  </div>
 
-  // Initial text
-  document.getElementById("msg").innerText =
-    "Redirecting in " + count + " seconds";
+  <script>
+    const destination = "12.966962,80.253182";
+    let count = 10;
 
-  // Countdown
-  let timer = setInterval(function () {
-    count--;
+    // Initial text
+    document.getElementById("msg").innerText = "Redirecting in " + count + " seconds";
 
-    document.getElementById("msg").innerText =
-      "Redirecting in " + count + " seconds";
+    // Countdown timer
+    let timer = setInterval(function () {
+      count--;
+      document.getElementById("msg").innerText = "Redirecting in " + count + " seconds";
+      if (count <= 0) {
+        clearInterval(timer);
+        goToMaps();
+      }
+    }, 1000);
 
-    if (count <= 0) {
-      clearInterval(timer);
+    // Redirect to Google Maps
+    function goToMaps() {
+      window.location.href = `https://www.google.com/maps/dir/?api=1&destination=${destination}`;
+    }
+
+    // Skip button
+    function skipNow() {
       goToMaps();
     }
-  }, 1000);
 
-  // Redirect function
-  function goToMaps() {
-    window.location.href =
-      `https://www.google.com/maps/dir/?api=1&destination=${destination}`;
-  }
+    // FIXED Rapido button - Now properly opens the app if installed
+    function bookRapido() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+          // Get current location as pickup
+          let lat = position.coords.latitude;
+          let lon = position.coords.longitude;
 
-  // Skip button
-  function skipNow() {
-    goToMaps();
-  }
+          // Correct intent to launch Rapido app directly
+          const intentUrl = `intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=com.rapido.passenger;end`;
+          
+          window.location.href = intentUrl;
 
-  // Rapido booking
-  function bookRapido() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function (position) {
-        let lat = position.coords.latitude;
-        let lon = position.coords.longitude;
+          // Fallback to Play Store ONLY if app is not installed
+          setTimeout(() => {
+            window.location.href = "https://play.google.com/store/apps/details?id=com.rapido.passenger";
+          }, 1500);
 
-        // Try opening Rapido app
-        window.location.href =
-          `intent://?pickup=${lat},${lon}&drop=${destination}#Intent;scheme=rapido;package=com.rapido.passenger;end`;
-
-        // If app not installed → Play Store
-        setTimeout(() => {
-          window.location.href =
-            "https://play.google.com/store/apps/details?id=com.rapido.passenger";
-        }, 2000);
-
-      }, function () {
-        alert("Location access denied ❌");
-      });
-    } else {
-      alert("Geolocation not supported ❌");
+        }, function () {
+          alert("Location access denied ❌");
+        });
+      } else {
+        alert("Geolocation not supported ❌");
+      }
     }
-  }
-</script>
+  </script>
 </body>
 </html>
