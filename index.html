@@ -185,128 +185,135 @@
       width: 100%;
       background: #fff;
       border-radius: 24px 24px 0 0;
-      padding: 22px 20px 36px;
+      padding: 20px 20px 34px;
       z-index: 202;
       transition: bottom 0.45s cubic-bezier(0.16,1,0.3,1);
       box-shadow: 0 -12px 40px rgba(0,0,0,0.15);
+      max-height: 92vh;
+      overflow-y: auto;
     }
     .rapido-sheet.show { bottom: 0; }
 
-    .rapido-sheet .rs-handle {
+    .rs-handle {
       width: 40px; height: 4px;
       background: #e2e8f0;
       border-radius: 4px;
-      margin: 0 auto 18px;
+      margin: 0 auto 16px;
+    }
+    .rs-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .rs-header-title {
+      font-size: 1.05rem; font-weight: 700; color: #1a202c;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .rs-close {
+      background: #edf2f7; border: none; width: 30px; height: 30px;
+      border-radius: 50%; font-size: 1.1rem; color: #718096;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      touch-action: manipulation;
     }
 
-    .rapido-sheet .rs-title {
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: #1a202c;
-      margin-bottom: 4px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+    /* Tabs */
+    .rs-tabs {
+      display: flex; gap: 8px; margin-bottom: 18px;
+      background: #f7fafc; border-radius: 12px; padding: 4px;
     }
-    .rapido-sheet .rs-subtitle {
-      font-size: 0.82rem;
-      color: #718096;
-      margin-bottom: 18px;
+    .rs-tab {
+      flex: 1; padding: 9px 6px; border: none; border-radius: 9px;
+      font-size: 0.8rem; font-weight: 600; cursor: pointer;
+      transition: all 0.2s; background: transparent; color: #718096;
+      touch-action: manipulation;
     }
+    .rs-tab.active {
+      background: #fff; color: #1a202c;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.1);
+    }
+
+    /* Tab panels */
+    .rs-panel { display: none; }
+    .rs-panel.active { display: block; }
 
     /* Steps */
-    .rs-steps { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
+    .rs-steps { display: flex; flex-direction: column; gap: 9px; margin-bottom: 16px; }
     .rs-step {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      background: #f7fafc;
-      border-radius: 14px;
-      padding: 12px 14px;
+      display: flex; align-items: flex-start; gap: 11px;
+      background: #f7fafc; border-radius: 13px; padding: 11px 13px;
     }
     .rs-step-num {
-      min-width: 26px; height: 26px;
-      background: #FF6B6B;
-      color: #fff;
-      border-radius: 50%;
-      font-size: 0.75rem;
-      font-weight: 700;
+      min-width: 24px; height: 24px;
+      border-radius: 50%; font-size: 0.72rem; font-weight: 700;
       display: flex; align-items: center; justify-content: center;
-      margin-top: 1px;
+      margin-top: 1px; flex-shrink: 0;
     }
+    .rs-step-num.red   { background: #FF6B6B; color: #fff; }
+    .rs-step-num.amber { background: #F6AD55; color: #fff; }
+    .rs-step-num.green { background: #68D391; color: #fff; }
     .rs-step-text {
-      font-size: 0.85rem;
-      color: #2d3748;
-      line-height: 1.5;
+      font-size: 0.83rem; color: #2d3748; line-height: 1.55;
     }
     .rs-step-text b { color: #1a202c; }
-    .rs-step-text .highlight {
-      display: inline-block;
-      background: #ebf8ff;
-      color: #2b6cb0;
-      border-radius: 6px;
-      padding: 1px 7px;
-      font-weight: 600;
-      font-size: 0.82rem;
+    .tag {
+      display: inline-block; border-radius: 6px;
+      padding: 1px 7px; font-weight: 600; font-size: 0.78rem;
     }
+    .tag-blue  { background: #ebf8ff; color: #2b6cb0; }
+    .tag-amber { background: #fffbeb; color: #b7791f; }
+    .tag-green { background: #f0fff4; color: #276749; }
+    .tag-red   { background: #fff5f5; color: #c53030; }
+
+    /* Info box */
+    .rs-info {
+      background: #fffbeb; border: 1px solid #fbd38d;
+      border-radius: 12px; padding: 11px 13px;
+      font-size: 0.8rem; color: #744210; line-height: 1.5;
+      margin-bottom: 14px;
+    }
+    .rs-info b { color: #5c3500; }
 
     /* Coordinates box */
     .coords-box {
-      background: #1a202c;
-      border-radius: 14px;
-      padding: 14px 16px;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
+      background: #1a202c; border-radius: 14px;
+      padding: 13px 15px; margin-bottom: 12px;
+      display: flex; align-items: center;
+      justify-content: space-between; gap: 10px;
     }
-    .coords-box .coord-val {
+    .coord-label {
+      font-size: 0.66rem; color: #718096;
+      text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px;
+    }
+    .coord-val {
       font-family: 'Courier New', monospace;
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: #68d391;
+      font-size: 1.02rem; font-weight: 700; color: #68d391;
       letter-spacing: 0.03em;
-      /* ALLOW text selection for manual copy */
-      user-select: text;
-      -webkit-user-select: text;
+      user-select: text; -webkit-user-select: text;
     }
-    .coords-box .coord-label {
-      font-size: 0.68rem;
-      color: #718096;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin-bottom: 3px;
-    }
-
     .copy-btn {
-      background: #FF6B6B;
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      padding: 10px 14px;
-      font-size: 0.82rem;
-      font-weight: 700;
-      cursor: pointer;
-      min-width: 80px;
-      touch-action: manipulation;
-      white-space: nowrap;
-      transition: background 0.2s;
+      background: #FF6B6B; color: #fff; border: none;
+      border-radius: 10px; padding: 10px 14px;
+      font-size: 0.82rem; font-weight: 700; cursor: pointer;
+      min-width: 76px; touch-action: manipulation;
+      white-space: nowrap; transition: background 0.2s; flex-shrink: 0;
     }
     .copy-btn:active { transform: scale(0.96); }
     .copy-btn.copied { background: #38a169; }
 
+    /* Action buttons */
+    .rs-btn-primary {
+      background: linear-gradient(135deg, #2d3748, #1a202c);
+      color: #fff; border: none; border-radius: 13px;
+      padding: 14px; font-size: 0.9rem; font-weight: 700;
+      cursor: pointer; width: 100%; margin-bottom: 9px;
+      touch-action: manipulation; display: flex;
+      align-items: center; justify-content: center; gap: 8px;
+    }
+    .rs-btn-primary:active { transform: scale(0.98); }
     .rs-dismiss {
-      background: transparent;
-      border: 2px solid #e2e8f0;
-      color: #718096;
-      border-radius: 12px;
-      padding: 11px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      width: 100%;
-      touch-action: manipulation;
+      background: transparent; border: 2px solid #e2e8f0;
+      color: #718096; border-radius: 12px; padding: 11px;
+      font-size: 0.83rem; font-weight: 600; cursor: pointer;
+      width: 100%; touch-action: manipulation;
     }
   </style>
 </head>
@@ -336,40 +343,112 @@
   <div class="backdrop" id="rapidoBackdrop" onclick="closeRapidoSheet()" style="z-index:201;"></div>
   <div class="rapido-sheet" id="rapidoSheet">
     <div class="rs-handle"></div>
-    <div class="rs-title">🏍️ How to enter destination in Rapido</div>
-    <div class="rs-subtitle">Rapido doesn't support auto-fill — follow these 3 quick steps:</div>
 
-    <div class="rs-steps">
-      <div class="rs-step">
-        <div class="rs-step-num">1</div>
-        <div class="rs-step-text">
-          In Rapido, tap the <b>destination box</b> (top of screen that says "Where to?")
-        </div>
-      </div>
-      <div class="rs-step">
-        <div class="rs-step-num">2</div>
-        <div class="rs-step-text">
-          Tap <span class="highlight">📍 Select on map</span> (below the search bar)
-        </div>
-      </div>
-      <div class="rs-step">
-        <div class="rs-step-num">3</div>
-        <div class="rs-step-text">
-          Tap the <b>search / coordinates field</b> on the map screen and <b>paste</b> the coordinates below — it will pin the exact venue!
-        </div>
-      </div>
+    <div class="rs-header">
+      <div class="rs-header-title">🏍️ Open Rapido to Venue</div>
+      <button class="rs-close" onclick="closeRapidoSheet()">×</button>
     </div>
 
-    <!-- Coordinates copy box -->
-    <div class="coords-box">
-      <div>
-        <div class="coord-label">📍 Paste these coordinates</div>
-        <div class="coord-val" id="coordDisplay">12.966962, 80.253182</div>
-      </div>
-      <button class="copy-btn" id="copyBtn" onclick="copyCoords()">📋 Copy</button>
+    <!-- Tab switcher -->
+    <div class="rs-tabs">
+      <button class="rs-tab active" id="tabTasker" onclick="switchTab('tasker')">⚙️ Auto (Tasker)</button>
+      <button class="rs-tab"        id="tabManual" onclick="switchTab('manual')">✋ Manual</button>
     </div>
 
-    <button class="rs-dismiss" onclick="closeRapidoSheet()">Got it, opening Rapido →</button>
+    <!-- ── TASKER TAB ─────────────────────────────────── -->
+    <div class="rs-panel active" id="panelTasker">
+
+      <div class="rs-info">
+        <b>⚡ Zero-tap mode</b> — Tasker + AutoInput auto-types the destination &amp; selects it for you. One-time setup required.
+      </div>
+
+      <div class="rs-steps">
+        <div class="rs-step">
+          <div class="rs-step-num amber">1</div>
+          <div class="rs-step-text">
+            Install <span class="tag tag-amber">Tasker</span> and <span class="tag tag-amber">AutoInput</span> from Play Store. Both need to be licensed (paid or trial).
+          </div>
+        </div>
+        <div class="rs-step">
+          <div class="rs-step-num amber">2</div>
+          <div class="rs-step-text">
+            Enable <b>AutoInput Accessibility Service</b>: Settings → Accessibility → Installed apps → AutoInput → Turn on.
+          </div>
+        </div>
+        <div class="rs-step">
+          <div class="rs-step-num amber">3</div>
+          <div class="rs-step-text">
+            In Tasker: tap <span class="tag tag-blue">☰ → Backup</span>, then <b>import the XML file</b> shared with you (task: <b>"Rapido – Go to Venue"</b>).
+          </div>
+        </div>
+        <div class="rs-step">
+          <div class="rs-step-num amber">4</div>
+          <div class="rs-step-text">
+            Open Rapido once manually and check the exact text on the destination box — it may say <span class="tag tag-blue">"Where to?"</span> or <span class="tag tag-blue">"Drop location"</span>. Update <b>Step 3 of the task</b> (ActionId field) to match that exact text.
+          </div>
+        </div>
+        <div class="rs-step">
+          <div class="rs-step-num green">5</div>
+          <div class="rs-step-text">
+            Done! Now <b>long-press the Rapido button</b> in this page (hold 1.2 sec until it says "Tasker Activated ⚙️"), then release — it will fully automate the booking.
+          </div>
+        </div>
+      </div>
+
+      <div class="rs-info" style="background:#f0fff4; border-color:#9ae6b4; color:#276749;">
+        <b>💡 If Tasker step fails:</b> The most common reason is the destination search box text doesn't match. Open Rapido, read the exact placeholder text, and update ActionId in Step 3 of the task to match it.
+      </div>
+
+      <button class="rs-btn-primary" onclick="closeRapidoSheet()">
+        ⚙️ Got it — Open Rapido with Tasker
+      </button>
+      <button class="rs-dismiss" onclick="switchTab('manual')">Switch to Manual instead →</button>
+    </div>
+
+    <!-- ── MANUAL TAB ─────────────────────────────────── -->
+    <div class="rs-panel" id="panelManual">
+
+      <div class="rs-steps">
+        <div class="rs-step">
+          <div class="rs-step-num red">1</div>
+          <div class="rs-step-text">
+            Tap <b>"Open Rapido"</b> below — the app will launch.
+          </div>
+        </div>
+        <div class="rs-step">
+          <div class="rs-step-num red">2</div>
+          <div class="rs-step-text">
+            In Rapido, tap the <b>destination search box</b> (says "Where to?" or "Drop location").
+          </div>
+        </div>
+        <div class="rs-step">
+          <div class="rs-step-num red">3</div>
+          <div class="rs-step-text">
+            Tap <span class="tag tag-blue">📍 Select on map</span> (shown below the search bar).
+          </div>
+        </div>
+        <div class="rs-step">
+          <div class="rs-step-num red">4</div>
+          <div class="rs-step-text">
+            Tap the <b>search field on the map screen</b> and <b>paste</b> the coordinates — the pin will drop at the exact venue!
+          </div>
+        </div>
+      </div>
+
+      <!-- Coordinates copy box -->
+      <div class="coords-box">
+        <div>
+          <div class="coord-label">📍 Copy &amp; paste in Rapido map search</div>
+          <div class="coord-val" id="coordDisplay">12.966962, 80.253182</div>
+        </div>
+        <button class="copy-btn" id="copyBtn" onclick="copyCoords()">📋 Copy</button>
+      </div>
+
+      <button class="rs-btn-primary" onclick="closeRapidoSheet()">
+        🏍️ Open Rapido
+      </button>
+      <button class="rs-dismiss" onclick="switchTab('tasker')">← Set up Tasker auto-mode</button>
+    </div>
   </div>
 
   <div class="backdrop" id="backdrop" onclick="closeBottomSheet()"></div>
@@ -417,7 +496,7 @@
         </div>
         <div class="app-details">
           <div class="app-name" id="rapidoText">Rapido</div>
-          <div class="app-desc" id="rapidoDesc">Bike Taxi & Auto</div>
+          <div class="app-desc" id="rapidoDesc">Tap · Long-press for Tasker ⚙️</div>
         </div>
         <div class="chevron">›</div>
       </div>
@@ -526,7 +605,7 @@
       setTimeout(() => {
         btn.classList.remove('geek-mode-active');
         document.getElementById('rapidoText').innerText = "Rapido";
-        document.getElementById('rapidoDesc').innerText = "Bike Taxi & Auto";
+        document.getElementById('rapidoDesc').innerText = "Tap · Long-press for Tasker ⚙️";
       }, 400);
 
       bookRide(wasGeek ? 'rapido-tasker' : 'rapido');
@@ -603,32 +682,35 @@
       }
 
       else if (app === 'rapido-tasker') {
-        /*
-         * Geek / Tasker mode — long-press only.
-         * Fires a Tasker named task via its documented intent scheme.
-         * Only works on Android with Tasker installed.
-         */
         if (!isAndroid) {
           alert("Tasker automation is only available on Android! 🤖");
           return;
         }
-        const taskName    = encodeURIComponent("Rapido – Go to MyHome");
-        const taskerScheme =
+        // Task name must match exactly what's in the imported Tasker XML
+        const taskName = encodeURIComponent("Rapido \u2013 Go to Venue");
+        window.location.href =
           `intent://#Intent;` +
           `action=net.dinglisch.android.tasker.ACTION_TASK;` +
           `S.task_name=${taskName};` +
           `package=net.dinglisch.android.taskerm;` +
           `end`;
-        window.location.href = taskerScheme;
       }
     }
 
+    function switchTab(tab) {
+      document.getElementById('tabTasker').classList.toggle('active', tab === 'tasker');
+      document.getElementById('tabManual').classList.toggle('active', tab === 'manual');
+      document.getElementById('panelTasker').classList.toggle('active', tab === 'tasker');
+      document.getElementById('panelManual').classList.toggle('active', tab === 'manual');
+    }
+
     /*
-     * showRapidoSheet — slides up the step-by-step instruction card.
-     * App is NOT opened yet. User reads steps, copies coords, THEN taps
-     * "Got it" which closes the sheet and launches Rapido.
+     * showRapidoSheet — slides up the instruction card.
+     * Short tap → opens on Manual tab (copy coords).
+     * Long press (Tasker) → handled separately via bookRide('rapido-tasker').
      */
-    function showRapidoSheet() {
+    function showRapidoSheet(tab = 'manual') {
+      switchTab(tab);
       document.getElementById('coordDisplay').innerText = `${DEST_LAT}, ${DEST_LNG}`;
       document.getElementById('rapidoBackdrop').classList.add('active');
       document.getElementById('rapidoSheet').classList.add('show');
@@ -699,6 +781,19 @@
       if (cb) cb();
     }
 
+    /*
+     * openWithStoreFallback()
+     * -----------------------
+     * Tries to open `appUrl` (custom scheme / universal link).
+     * If the page is still visible after `FALLBACK_MS` ms, the app
+     * was not installed → redirect to `storeUrl` instead.
+     *
+     * Key fix vs original code:
+     *  • Uses `visibilitychange` to cancel fallback immediately when
+     *    the app launches (page goes hidden).
+     *  • Does NOT call e.preventDefault() anywhere, which broke touch
+     *    events on some Android browsers.
+     */
     function openWithStoreFallback(appUrl, storeUrl, fallbackMs = 1800) {
       let fallbackTimer;
 
