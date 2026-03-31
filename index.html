@@ -271,7 +271,6 @@
     }
 
     function closeBottomSheet() {
-      document.getElementById('backdrop').classList.add('active');
       document.getElementById('backdrop').classList.remove('active');
       document.getElementById('bottomSheet').classList.remove('active');
     }
@@ -282,44 +281,50 @@
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
       if (app === 'uber') {
-        // Uber Universal Link (Works perfectly cross-platform)
         window.location.href = `https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=${destLat}&dropoff[longitude]=${destLng}`;
       } 
       else if (app === 'ola') {
         if (isAndroid) {
-          // Ola specific Intent with fallback to PlayStore
           const playStore = encodeURIComponent("https://play.google.com/store/apps/details?id=com.olacabs.customer");
           window.location.href = `intent://app/launch?lat=${destLat}&lng=${destLng}#Intent;scheme=ola;package=com.olacabs.customer;S.browser_fallback_url=${playStore};end`;
         } else if (isIOS) {
-          tryIOSFallback("olacabs://", "https://apps.apple.com/in/app/ola-safe-and-affordable-rides/id539179365");
+          tryManualFallback("olacabs://", "https://apps.apple.com/in/app/ola-safe-and-affordable-rides/id539179365");
         } else {
           window.open("https://book.olacabs.com/", "_blank");
         }
       }
       else if (app === 'rapido') {
         if (isAndroid) {
-          // The working intent for Rapido
-          const playStore = encodeURIComponent("https://play.google.com/store/apps/details?id=com.rapido.passenger");
-          window.location.href = `intent://#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=com.rapido.passenger;S.browser_fallback_url=${playStore};end`;
+          // 🔥 FIX: Removed S.browser_fallback_url to stop Chrome from forcing Play Store immediately!
+          // Only sending the package intent, fallback is handled manually below.
+          window.location.href = "intent://#Intent;package=com.rapido.passenger;end";
+          
+          // Manual fallback to Play Store if app doesn't open
+          tryManualFallback(null, "https://play.google.com/store/apps/details?id=com.rapido.passenger", true);
         } else if (isIOS) {
-          tryIOSFallback("rapido://", "https://apps.apple.com/in/app/rapido-bike-taxi-auto/id1192561131");
+          tryManualFallback("rapido://", "https://apps.apple.com/in/app/rapido-bike-taxi-auto/id1192561131");
         } else {
           window.open("https://play.google.com/store/apps/details?id=com.rapido.passenger", "_blank");
         }
       }
       
-      setTimeout(closeBottomSheet, 500); // Close sheet after click
+      setTimeout(closeBottomSheet, 500); 
     }
 
-    // Helper for iOS fallback since iOS doesn't support intents natively via web
-    function tryIOSFallback(scheme, storeUrl) {
+    // Manual Timer Fallback (Smart checking)
+    function tryManualFallback(schemeUrl, storeUrl, isAndroidIntent = false) {
       const start = Date.now();
+      
       setTimeout(() => {
+        // If 1.5s passed and page is still active, app didn't open. So go to store!
         if (Date.now() - start < 2500 && document.visibilityState !== 'hidden') {
           window.location.href = storeUrl;
         }
-      }, 2000);
-      window.location.href = scheme;
+      }, 1500);
+      
+      if (!isAndroidIntent && schemeUrl) {
+        window.location.href = schemeUrl;
+      }
     }
   </script>
 </body>
