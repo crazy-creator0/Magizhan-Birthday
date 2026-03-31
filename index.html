@@ -32,7 +32,7 @@
       height: 100%; width: 0%;
       background: linear-gradient(90deg, #f9a825, #e53935);
       border-radius: 10px;
-      animation: fill 3s linear forwards;  /* ← change 3s to adjust delay */
+      animation: fill 10s linear forwards;  /* ← change 3s to adjust delay */
     }
     @keyframes fill { to { width: 100%; } }
     .note { margin-top: 20px; font-size: 0.85rem; color: #555; }
@@ -44,7 +44,7 @@
   <p>Taking you to the venue...</p>
   <div class="bar-bg"><div class="bar-fill"></div></div>
 <div class="note" id="msg" style="font-size:20px; color:blue;">
-  Redirecting in 3 seconds
+  Redirecting in 10 seconds
 </div>
 <div style="margin-top:20px;">
   <button onclick="bookRapido()" 
@@ -57,45 +57,63 @@
     ⏩ Skip Waiting
   </button>
 </div>
-  <script>
-    const destination = "12.966962, 80.253182";
-    setTimeout(() => {
-      window.location.href =
-        `https://www.google.com/maps/dir/?api=1&destination=${destination}`;
-    }, 10000);
-    let count = 10;
+  
+<script>
+  const destination = "12.966962,80.253182";
+  let count = 10;
 
-let timer = setInterval(function() {
-  count--;
-
-  document.getElementById("msg").innerText = 
+  // Initial text
+  document.getElementById("msg").innerText =
     "Redirecting in " + count + " seconds";
 
-  if (count === 0) {
-    clearInterval(timer);
-  }
-}, 1000);
-    function skipNow() {
-  window.location.href =
-    `https://www.google.com/maps/dir/?api=1&destination=${destination}`;
-}
+  // Countdown
+  let timer = setInterval(function () {
+    count--;
 
-function bookRapido() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function(position) {
-      let lat = position.coords.latitude;
-      let lon = position.coords.longitude;
+    document.getElementById("msg").innerText =
+      "Redirecting in " + count + " seconds";
 
-      // Rapido deep link (fallback to maps if not supported)
-      window.location.href =
-        `https://rapido.bike/?pickup=${lat},${lon}&drop=${destination}`;
-    }, function() {
-      alert("Location access denied ❌");
-    });
-  } else {
-    alert("Geolocation not supported ❌");
+    if (count <= 0) {
+      clearInterval(timer);
+      goToMaps();
+    }
+  }, 1000);
+
+  // Redirect function
+  function goToMaps() {
+    window.location.href =
+      `https://www.google.com/maps/dir/?api=1&destination=${destination}`;
   }
-}
-  </script>
+
+  // Skip button
+  function skipNow() {
+    goToMaps();
+  }
+
+  // Rapido booking
+  function bookRapido() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function (position) {
+        let lat = position.coords.latitude;
+        let lon = position.coords.longitude;
+
+        // Try opening Rapido app
+        window.location.href =
+          `intent://?pickup=${lat},${lon}&drop=${destination}#Intent;scheme=rapido;package=com.rapido.passenger;end`;
+
+        // If app not installed → Play Store
+        setTimeout(() => {
+          window.location.href =
+            "https://play.google.com/store/apps/details?id=com.rapido.passenger";
+        }, 2000);
+
+      }, function () {
+        alert("Location access denied ❌");
+      });
+    } else {
+      alert("Geolocation not supported ❌");
+    }
+  }
+</script>
 </body>
 </html>
