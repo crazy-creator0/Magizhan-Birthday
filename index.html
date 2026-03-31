@@ -2,16 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Magizhan's Birthday 🎉</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --rapido: #f9c900;
-      --uber: #000000;
-      --maps: #4285F4;
+      --primary: #FF6B6B;
+      --secondary: #FF8E53;
       --text-main: #2d3748;
       --text-muted: #718096;
+      --bg-color: #f7fafc;
     }
 
     * { 
@@ -19,10 +19,10 @@
       padding: 0; 
       box-sizing: border-box; 
       font-family: 'Poppins', sans-serif;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
-      /* Festive warm gradient */
       background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
       display: flex;
       flex-direction: column;
@@ -30,8 +30,10 @@
       justify-content: center;
       min-height: 100vh;
       padding: 20px;
+      overflow: hidden; /* Prevent scrolling when sheet is open */
     }
 
+    /* Main Card */
     .card {
       background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(10px);
@@ -41,11 +43,10 @@
       max-width: 400px;
       text-align: center;
       box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-      transform: translateY(0);
-      animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      animation: slideUpCard 0.8s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    @keyframes slideUp {
+    @keyframes slideUpCard {
       from { opacity: 0; transform: translateY(30px); }
       to { opacity: 1; transform: translateY(0); }
     }
@@ -62,93 +63,106 @@
       50% { transform: translateY(-10px) scale(1.05); }
     }
 
-    h1 { 
-      color: var(--text-main);
-      font-size: 1.6rem; 
-      font-weight: 700;
-      margin-bottom: 8px; 
-    }
+    h1 { color: var(--text-main); font-size: 1.6rem; font-weight: 700; margin-bottom: 8px; }
+    p.subtitle { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 25px; line-height: 1.5; }
 
-    p.subtitle { 
-      color: var(--text-muted); 
-      font-size: 0.95rem; 
-      margin-bottom: 25px; 
-      line-height: 1.5;
-    }
+    /* Progress & Timer */
+    .progress-container { background: #edf2f7; border-radius: 12px; height: 8px; width: 100%; overflow: hidden; margin-bottom: 15px; }
+    .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 12px; animation: fillBar 10s linear forwards; }
+    @keyframes fillBar { to { width: 100%; } }
+    
+    .timer-text { font-size: 0.9rem; color: var(--primary); font-weight: 600; margin-bottom: 30px; animation: pulseText 1.5s infinite; }
+    @keyframes pulseText { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
 
-    /* Progress Bar UI */
-    .progress-container {
-      background: #edf2f7;
-      border-radius: 12px;
-      height: 8px;
-      width: 100%;
-      overflow: hidden;
-      margin-bottom: 15px;
-    }
-
-    .progress-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #FF6B6B, #FF8E53);
-      border-radius: 12px;
-      animation: fillBar 10s linear forwards;
-    }
-
-    @keyframes fillBar { 
-      to { width: 100%; } 
-    }
-
-    .timer-text { 
-      font-size: 0.9rem; 
-      color: #FF6B6B; 
+    /* Main Action Buttons */
+    .btn-group { display: flex; flex-direction: column; gap: 15px; }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+      color: white;
+      padding: 16px 20px;
+      border: none;
+      border-radius: 16px;
+      font-size: 1.1rem;
       font-weight: 600;
-      margin-bottom: 30px;
-      animation: pulseText 1.5s infinite;
-    }
-
-    @keyframes pulseText {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.6; }
-    }
-
-    /* Modern Buttons */
-    .btn-group {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .btn {
+      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 10px;
-      padding: 14px 20px; 
-      border: none; 
-      border-radius: 12px; 
-      cursor: pointer; 
-      font-weight: 600; 
-      font-size: 1rem;
-      transition: all 0.2s ease;
-      width: 100%;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+      transition: transform 0.2s;
+    }
+    .btn-primary:active { transform: scale(0.98); }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-muted);
+      border: 2px solid #e2e8f0;
+      padding: 14px 20px;
+      border-radius: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
 
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    /* Razorpay Style Bottom Sheet */
+    .backdrop {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 100;
+    }
+    .backdrop.active { opacity: 1; pointer-events: all; }
+
+    .bottom-sheet {
+      position: fixed; bottom: -100%; left: 0; width: 100%;
+      background: #ffffff;
+      border-radius: 24px 24px 0 0;
+      padding: 24px 20px 30px;
+      z-index: 101;
+      transition: bottom 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 -10px 40px rgba(0,0,0,0.1);
+    }
+    .bottom-sheet.active { bottom: 0; }
+
+    .sheet-header {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
+    }
+    .sheet-header h3 { font-size: 1.2rem; color: var(--text-main); font-weight: 600; }
+    .close-btn { 
+      background: #edf2f7; border: none; width: 32px; height: 32px; 
+      border-radius: 50%; font-size: 1.2rem; color: var(--text-muted); 
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
     }
 
-    .btn:active {
-      transform: translateY(0);
+    /* App Options Grid/List */
+    .app-list { display: flex; flex-direction: column; gap: 12px; }
+    
+    .app-item {
+      display: flex; align-items: center; padding: 16px;
+      background: #f7fafc; border-radius: 16px; border: 1px solid #edf2f7;
+      cursor: pointer; transition: background 0.2s;
     }
-
-    .btn-uber { background: var(--uber); color: white; }
-    .btn-rapido { background: var(--rapido); color: black; }
-    .btn-maps { background: #f0f4f8; color: var(--maps); border: 1px solid #d9e2ec; }
-
-    /* Icons inside buttons */
-    .btn-icon { font-size: 1.2rem; }
+    .app-item:active { background: #e2e8f0; }
+    
+    .app-icon { 
+      width: 45px; height: 45px; border-radius: 12px; display: flex;
+      align-items: center; justify-content: center; font-size: 1.5rem; margin-right: 15px;
+    }
+    /* Brand Colors */
+    .icon-uber { background: #000; color: #fff; }
+    .icon-ola { background: #D5EC54; color: #000; }
+    .icon-rapido { background: #F9C900; color: #000; }
+    
+    .app-details { flex: 1; text-align: left; }
+    .app-name { font-weight: 600; color: var(--text-main); font-size: 1rem; }
+    .app-desc { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+    .chevron { color: #cbd5e0; font-weight: bold; }
 
   </style>
 </head>
@@ -159,29 +173,60 @@
     <h1>Magizhan's Birthday!</h1>
     <p class="subtitle">Join the celebration! We are navigating you to the party venue.</p>
     
-    <div class="progress-container">
-      <div class="progress-fill"></div>
-    </div>
-    
-    <div class="timer-text" id="msg">
-      Redirecting in 10 seconds...
-    </div>
+    <div class="progress-container"><div class="progress-fill"></div></div>
+    <div class="timer-text" id="msg">Redirecting in 10 seconds...</div>
     
     <div class="btn-group">
-      <!-- Uber Button -->
-      <button onclick="bookUber()" class="btn btn-uber">
-        <span class="btn-icon">🚗</span> Book with Uber
-      </button>
-
-      <!-- Rapido Button -->
-      <button onclick="bookRapido()" class="btn btn-rapido">
-        <span class="btn-icon">🛵</span> Open Rapido
+      <!-- Razorpay Style Trigger Button -->
+      <button onclick="openBottomSheet()" class="btn-primary">
+        <span>🚖</span> Choose Ride App
       </button>
       
-      <!-- Skip/Maps Button -->
-      <button onclick="skipNow()" class="btn btn-maps">
-        <span class="btn-icon">🗺️</span> Open Google Maps
+      <!-- Skip to Maps -->
+      <button onclick="skipNow()" class="btn-secondary">
+        <span>📍</span> Open Google Maps
       </button>
+    </div>
+  </div>
+
+  <!-- Bottom Sheet Overlay -->
+  <div class="backdrop" id="backdrop" onclick="closeBottomSheet()"></div>
+  <div class="bottom-sheet" id="bottomSheet">
+    <div class="sheet-header">
+      <h3>Book your ride via</h3>
+      <button class="close-btn" onclick="closeBottomSheet()">×</button>
+    </div>
+    
+    <div class="app-list">
+      <!-- Uber -->
+      <div class="app-item" onclick="bookRide('uber')">
+        <div class="app-icon icon-uber">U</div>
+        <div class="app-details">
+          <div class="app-name">Uber</div>
+          <div class="app-desc">Auto, Mini, Sedan</div>
+        </div>
+        <div class="chevron">></div>
+      </div>
+
+      <!-- Ola -->
+      <div class="app-item" onclick="bookRide('ola')">
+        <div class="app-icon icon-ola">O</div>
+        <div class="app-details">
+          <div class="app-name">Ola Cabs</div>
+          <div class="app-desc">Auto, Prime, Mini</div>
+        </div>
+        <div class="chevron">></div>
+      </div>
+
+      <!-- Rapido -->
+      <div class="app-item" onclick="bookRide('rapido')">
+        <div class="app-icon icon-rapido">🏍️</div>
+        <div class="app-details">
+          <div class="app-name">Rapido</div>
+          <div class="app-desc">Bike Taxi & Auto</div>
+        </div>
+        <div class="chevron">></div>
+      </div>
     </div>
   </div>
 
@@ -190,67 +235,91 @@
     const destLat = "12.966962";
     const destLng = "80.253182";
     let count = 10;
+    let timer;
 
     const msgElement = document.getElementById("msg");
-    msgElement.innerText = `Redirecting in ${count} seconds...`;
 
-    // Countdown timer logic
-    let timer = setInterval(function () {
-      count--;
+    function startTimer() {
       msgElement.innerText = `Redirecting in ${count} seconds...`;
-      if (count <= 0) {
-        clearInterval(timer);
-        goToMaps();
-      }
-    }, 1000);
+      timer = setInterval(function () {
+        count--;
+        msgElement.innerText = `Redirecting in ${count} seconds...`;
+        if (count <= 0) {
+          clearInterval(timer);
+          goToMaps();
+        }
+      }, 1000);
+    }
 
-    // Redirect to Google Maps
+    startTimer();
+
     function goToMaps() {
       window.location.href = `https://www.google.com/maps/dir/?api=1&destination=${destLat},${destLng}`;
     }
 
-    // Skip wait time
     function skipNow() {
       clearInterval(timer);
       goToMaps();
     }
 
-    // Unified App Opener (Smart Fallback for both Android & iOS)
-    function tryOpenApp(deepLink, storeLink) {
-      const start = Date.now();
+    // UI Logic for Bottom Sheet
+    function openBottomSheet() {
+      clearInterval(timer); // Stop redirect if user is interacting
+      msgElement.innerText = "Awaiting your selection...";
+      document.getElementById('backdrop').classList.add('active');
+      document.getElementById('bottomSheet').classList.add('active');
+    }
+
+    function closeBottomSheet() {
+      document.getElementById('backdrop').classList.add('active');
+      document.getElementById('backdrop').classList.remove('active');
+      document.getElementById('bottomSheet').classList.remove('active');
+    }
+
+    // App Navigation Logic
+    function bookRide(app) {
+      const isAndroid = /android/i.test(navigator.userAgent || navigator.vendor || window.opera);
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+      if (app === 'uber') {
+        // Uber Universal Link (Works perfectly cross-platform)
+        window.location.href = `https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=${destLat}&dropoff[longitude]=${destLng}`;
+      } 
+      else if (app === 'ola') {
+        if (isAndroid) {
+          // Ola specific Intent with fallback to PlayStore
+          const playStore = encodeURIComponent("https://play.google.com/store/apps/details?id=com.olacabs.customer");
+          window.location.href = `intent://app/launch?lat=${destLat}&lng=${destLng}#Intent;scheme=ola;package=com.olacabs.customer;S.browser_fallback_url=${playStore};end`;
+        } else if (isIOS) {
+          tryIOSFallback("olacabs://", "https://apps.apple.com/in/app/ola-safe-and-affordable-rides/id539179365");
+        } else {
+          window.open("https://book.olacabs.com/", "_blank");
+        }
+      }
+      else if (app === 'rapido') {
+        if (isAndroid) {
+          // The working intent for Rapido
+          const playStore = encodeURIComponent("https://play.google.com/store/apps/details?id=com.rapido.passenger");
+          window.location.href = `intent://#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=com.rapido.passenger;S.browser_fallback_url=${playStore};end`;
+        } else if (isIOS) {
+          tryIOSFallback("rapido://", "https://apps.apple.com/in/app/rapido-bike-taxi-auto/id1192561131");
+        } else {
+          window.open("https://play.google.com/store/apps/details?id=com.rapido.passenger", "_blank");
+        }
+      }
       
-      const fallbackTimer = setTimeout(() => {
-        // If time passed is less than 2.5s, it means the app didn't open and browser is still active
-        if (Date.now() - start < 2500) {
-          window.location.href = storeLink;
+      setTimeout(closeBottomSheet, 500); // Close sheet after click
+    }
+
+    // Helper for iOS fallback since iOS doesn't support intents natively via web
+    function tryIOSFallback(scheme, storeUrl) {
+      const start = Date.now();
+      setTimeout(() => {
+        if (Date.now() - start < 2500 && document.visibilityState !== 'hidden') {
+          window.location.href = storeUrl;
         }
       }, 2000);
-
-      const clearFallback = () => clearTimeout(fallbackTimer);
-      window.addEventListener('visibilitychange', () => { if (document.hidden) clearFallback(); });
-      window.addEventListener('pagehide', clearFallback);
-      window.addEventListener('blur', clearFallback);
-
-      window.location.href = deepLink;
-    }
-
-    // Rapido Logic
-    function bookRapido() {
-      clearInterval(timer); // Stop auto-redirect
-      const isAndroid = /android/i.test(navigator.userAgent || navigator.vendor || window.opera);
-      
-      const storeUrl = isAndroid 
-        ? "https://play.google.com/store/apps/details?id=com.rapido.passenger" 
-        : "https://apps.apple.com/in/app/rapido-bike-taxi-auto/id1192561131";
-        
-      tryOpenApp("rapido://", storeUrl);
-    }
-
-    // Uber Logic
-    function bookUber() {
-      clearInterval(timer); // Stop auto-redirect
-      // Uber's official Universal Link is the safest. It bypasses intent restrictions completely!
-      window.location.href = `https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=${destLat}&dropoff[longitude]=${destLng}`;
+      window.location.href = scheme;
     }
   </script>
 </body>
