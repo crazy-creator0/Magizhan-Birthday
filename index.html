@@ -333,6 +333,7 @@
   </div>
 
   <!-- Rapido step-by-step instruction sheet -->
+  <div class="backdrop" id="rapidoBackdrop" onclick="closeRapidoSheet()" style="z-index:201;"></div>
   <div class="rapido-sheet" id="rapidoSheet">
     <div class="rs-handle"></div>
     <div class="rs-title">🏍️ How to enter destination in Rapido</div>
@@ -480,7 +481,6 @@
       goToMaps();
     }
 
-    // ── Bottom Sheet ───────────────────────────────────────────────────
     function openBottomSheet() {
       stopTimer();
       msgEl.innerText = "Awaiting your selection...";
@@ -494,7 +494,6 @@
       document.getElementById('bottomSheet').classList.remove('active');
     }
 
-    // ── Rapido Long-Press Logic ────────────────────────────────────────
     let pressTimer = null;
     let isGeekMode = false;
     const HOLD_MS  = 1200;
@@ -512,7 +511,6 @@
     }
 
     function endRapidoPress(e) {
-      // Always stop propagation so touch doesn't double-fire
       e && e.stopPropagation();
 
       clearTimeout(pressTimer);
@@ -521,7 +519,6 @@
       const wasGeek = isGeekMode;
       isGeekMode = false;
 
-      // Reset visual after brief pause
       setTimeout(() => {
         btn.classList.remove('geek-mode-active');
         document.getElementById('rapidoText').innerText = "Rapido";
@@ -536,7 +533,6 @@
       isGeekMode = false;
     }
 
-    // Attach listeners to Rapido button properly
     const rapidoBtn = document.getElementById('rapidoBtn');
     rapidoBtn.addEventListener('mousedown',   startRapidoPress);
     rapidoBtn.addEventListener('mouseup',     endRapidoPress);
@@ -545,16 +541,10 @@
     rapidoBtn.addEventListener('touchend',    endRapidoPress);
     rapidoBtn.addEventListener('touchcancel', cancelRapidoPress);
 
-    // ── App Deep-Link Logic ────────────────────────────────────────────
     function bookRide(app) {
-      setTimeout(closeBottomSheet, 250);
+      if (app !== 'rapido') setTimeout(closeBottomSheet, 250);
 
       if (app === 'uber') {
-        /*
-         * Uber universal deep-link — works on both Android & iOS.
-         * Uses the official /ul/ endpoint which the Uber app intercepts.
-         * Fallback: Uber web (auto-prompts install if app missing).
-         */
         const uberUrl =
           `https://m.uber.com/ul/?action=setPickup` +
           `&pickup=my_location` +
@@ -570,13 +560,7 @@
       }
 
       else if (app === 'ola') {
-        /*
-         * Ola deeplink:
-         *   Android – use olacabs:// URI scheme directly.
-         *             intent:// is unreliable across MIUI / One UI browsers.
-         *   iOS     – same scheme supported.
-         *   Web     – book.olacabs.com with destination pre-filled.
-         */
+
         const olaScheme =
           `olacabs://app/launch?lat=${DEST_LAT}&lng=${DEST_LNG}` +
           `&category_id=1`;             // 1 = mini; auto-selects cheapest
@@ -595,20 +579,12 @@
       }
 
       else if (app === 'rapido') {
-        /*
-         * Show step-by-step instruction sheet first.
-         * The "Got it" button (closeRapidoSheet) actually launches the app.
-         * This way user has copied coordinates BEFORE switching to Rapido.
-         */
-        showRapidoSheet();
+        // Close the ride-picker sheet first, THEN show rapido instruction sheet
+        closeBottomSheet();
+        setTimeout(showRapidoSheet, 350);
       }
 
       else if (app === 'rapido-tasker') {
-        /*
-         * Geek / Tasker mode — long-press only.
-         * Fires a Tasker named task via its documented intent scheme.
-         * Only works on Android with Tasker installed.
-         */
         if (!isAndroid) {
           alert("Tasker automation is only available on Android! 🤖");
           return;
@@ -624,23 +600,16 @@
       }
     }
 
-    /*
-     * showRapidoSheet — slides up the step-by-step instruction card.
-     * App is NOT opened yet. User reads steps, copies coords, THEN taps
-     * "Got it" which closes the sheet and launches Rapido.
-     */
     function showRapidoSheet() {
       document.getElementById('coordDisplay').innerText = `${DEST_LAT}, ${DEST_LNG}`;
-      // Also add a backdrop for the rapido sheet
-      document.getElementById('backdrop').classList.add('active');
+      document.getElementById('rapidoBackdrop').classList.add('active');
       document.getElementById('rapidoSheet').classList.add('show');
     }
 
     function closeRapidoSheet() {
       document.getElementById('rapidoSheet').classList.remove('show');
-      document.getElementById('backdrop').classList.remove('active');
+      document.getElementById('rapidoBackdrop').classList.remove('active');
 
-      // NOW launch Rapido (after user has had time to copy coords)
       const rapidoStore = isIOS
         ? "https://apps.apple.com/in/app/rapido-bike-taxi-auto-cabs/id1198464606"
         : "https://play.google.com/store/apps/details?id=com.rapido.passenger";
@@ -677,7 +646,6 @@
       let fallbackTimer;
 
       function onHide() {
-        // App launched → page went to background → cancel store redirect
         clearTimeout(fallbackTimer);
         document.removeEventListener('visibilitychange', onHide);
       }
