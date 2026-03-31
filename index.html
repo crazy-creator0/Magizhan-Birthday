@@ -20,6 +20,8 @@
       box-sizing: border-box; 
       font-family: 'Poppins', sans-serif;
       -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none; /* Prevent default long-press context menu */
+      user-select: none;
     }
 
     body {
@@ -30,10 +32,9 @@
       justify-content: center;
       min-height: 100vh;
       padding: 20px;
-      overflow: hidden; /* Prevent scrolling when sheet is open */
+      overflow: hidden;
     }
 
-    /* Main Card */
     .card {
       background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(10px);
@@ -66,7 +67,6 @@
     h1 { color: var(--text-main); font-size: 1.6rem; font-weight: 700; margin-bottom: 8px; }
     p.subtitle { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 25px; line-height: 1.5; }
 
-    /* Progress & Timer */
     .progress-container { background: #edf2f7; border-radius: 12px; height: 8px; width: 100%; overflow: hidden; margin-bottom: 15px; }
     .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 12px; animation: fillBar 10s linear forwards; }
     @keyframes fillBar { to { width: 100%; } }
@@ -74,7 +74,6 @@
     .timer-text { font-size: 0.9rem; color: var(--primary); font-weight: 600; margin-bottom: 30px; animation: pulseText 1.5s infinite; }
     @keyframes pulseText { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
 
-    /* Main Action Buttons */
     .btn-group { display: flex; flex-direction: column; gap: 15px; }
     
     .btn-primary {
@@ -109,7 +108,6 @@
       gap: 8px;
     }
 
-    /* Razorpay Style Bottom Sheet */
     .backdrop {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0,0,0,0.5);
@@ -140,30 +138,48 @@
       cursor: pointer; display: flex; align-items: center; justify-content: center;
     }
 
-    /* App Options Grid/List */
     .app-list { display: flex; flex-direction: column; gap: 12px; }
     
     .app-item {
       display: flex; align-items: center; padding: 16px;
       background: #f7fafc; border-radius: 16px; border: 1px solid #edf2f7;
-      cursor: pointer; transition: background 0.2s;
+      cursor: pointer; transition: all 0.2s;
     }
-    .app-item:active { background: #e2e8f0; }
+    .app-item:active { background: #e2e8f0; transform: scale(0.98); }
     
     .app-icon { 
       width: 45px; height: 45px; border-radius: 12px; display: flex;
-      align-items: center; justify-content: center; font-size: 1.5rem; margin-right: 15px;
+      align-items: center; justify-content: center; margin-right: 15px;
+      overflow: hidden; background: #fff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      transition: all 0.3s ease;
     }
-    /* Brand Colors */
-    .icon-uber { background: #000; color: #fff; }
-    .icon-ola { background: #D5EC54; color: #000; }
-    .icon-rapido { background: #F9C900; color: #000; }
-    .icon-tasker { background: #ff9800; color: #fff; }
+    
+    .real-logo {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+
+    .fallback-icon {
+      display: flex; align-items: center; justify-content: center;
+      width: 100%; height: 100%; font-size: 1.5rem; font-weight: bold;
+    }
+    .icon-uber .fallback-icon { background: #000; color: #fff; }
+    .icon-ola .fallback-icon { background: #D5EC54; color: #000; }
+    .icon-rapido .fallback-icon { background: #F9C900; color: #000; }
     
     .app-details { flex: 1; text-align: left; }
-    .app-name { font-weight: 600; color: var(--text-main); font-size: 1rem; }
+    .app-name { font-weight: 600; color: var(--text-main); font-size: 1rem; transition: color 0.3s; }
     .app-desc { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
     .chevron { color: #cbd5e0; font-weight: bold; }
+
+    /* Secret Mode Animation */
+    .geek-mode-active {
+      background: #fff3e0 !important;
+      border-color: #ff9800 !important;
+    }
+    .geek-mode-active .app-name {
+      color: #e65100;
+    }
 
   </style>
 </head>
@@ -178,19 +194,16 @@
     <div class="timer-text" id="msg">Redirecting in 10 seconds...</div>
     
     <div class="btn-group">
-      <!-- Razorpay Style Trigger Button -->
       <button onclick="openBottomSheet()" class="btn-primary">
         <span>🚖</span> Choose Ride App
       </button>
       
-      <!-- Skip to Maps -->
       <button onclick="skipNow()" class="btn-secondary">
         <span>📍</span> Open Google Maps
       </button>
     </div>
   </div>
 
-  <!-- Bottom Sheet Overlay -->
   <div class="backdrop" id="backdrop" onclick="closeBottomSheet()"></div>
   <div class="bottom-sheet" id="bottomSheet">
     <div class="sheet-header">
@@ -201,7 +214,10 @@
     <div class="app-list">
       <!-- Uber -->
       <div class="app-item" onclick="bookRide('uber')">
-        <div class="app-icon icon-uber">U</div>
+        <div class="app-icon icon-uber">
+          <img src="https://logo.clearbit.com/uber.com" alt="Uber" class="real-logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="fallback-icon" style="display: none;">U</div>
+        </div>
         <div class="app-details">
           <div class="app-name">Uber</div>
           <div class="app-desc">Auto, Mini, Sedan</div>
@@ -211,7 +227,10 @@
 
       <!-- Ola -->
       <div class="app-item" onclick="bookRide('ola')">
-        <div class="app-icon icon-ola">O</div>
+        <div class="app-icon icon-ola">
+          <img src="https://logo.clearbit.com/olacabs.com" alt="Ola" class="real-logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="fallback-icon" style="display: none;">O</div>
+        </div>
         <div class="app-details">
           <div class="app-name">Ola Cabs</div>
           <div class="app-desc">Auto, Prime, Mini</div>
@@ -219,25 +238,22 @@
         <div class="chevron">></div>
       </div>
 
-      <!-- Rapido -->
-      <div class="app-item" onclick="bookRide('rapido')">
-        <div class="app-icon icon-rapido">🏍️</div>
+      <!-- MERGED Rapido (Normal Click + Secret Long Press) -->
+      <div class="app-item" id="rapidoBtn" 
+           onmousedown="startRapidoPress()" onmouseup="endRapidoPress(event)" onmouseleave="cancelRapidoPress()"
+           ontouchstart="startRapidoPress()" ontouchend="endRapidoPress(event)" ontouchcancel="cancelRapidoPress()">
+        
+        <div class="app-icon icon-rapido">
+          <img src="https://logo.clearbit.com/rapido.bike" alt="Rapido" class="real-logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="fallback-icon" style="display: none;">🏍️</div>
+        </div>
         <div class="app-details">
-          <div class="app-name">Rapido</div>
-          <div class="app-desc">Bike Taxi & Auto</div>
+          <div class="app-name" id="rapidoText">Rapido</div>
+          <div class="app-desc" id="rapidoDesc">Bike Taxi & Auto</div>
         </div>
         <div class="chevron">></div>
       </div>
 
-      <!-- Rapido Tasker Automation (Geek Mode) -->
-      <div class="app-item" onclick="bookRide('rapido-tasker')">
-        <div class="app-icon icon-tasker">⚙️</div>
-        <div class="app-details">
-          <div class="app-name">Rapido (Tasker Auto)</div>
-          <div class="app-desc">Zero-tap booking (Geek Mode)</div>
-        </div>
-        <div class="chevron">></div>
-      </div>
     </div>
   </div>
 
@@ -273,9 +289,8 @@
       goToMaps();
     }
 
-    // UI Logic for Bottom Sheet
     function openBottomSheet() {
-      clearInterval(timer); // Stop redirect if user is interacting
+      clearInterval(timer);
       msgElement.innerText = "Awaiting your selection...";
       document.getElementById('backdrop').classList.add('active');
       document.getElementById('bottomSheet').classList.add('active');
@@ -285,6 +300,58 @@
       document.getElementById('backdrop').classList.remove('active');
       document.getElementById('bottomSheet').classList.remove('active');
     }
+
+    // --- SECRET GEEK MODE LOGIC (LONG PRESS) ---
+    let pressTimer;
+    let isGeekMode = false;
+    const holdDuration = 1200; // 1.2 seconds hold required for Tasker
+
+    function startRapidoPress() {
+      isGeekMode = false;
+      const btn = document.getElementById('rapidoBtn');
+      
+      pressTimer = setTimeout(() => {
+        isGeekMode = true;
+        
+        // Visual feedback when Secret Mode unlocks
+        btn.classList.add('geek-mode-active');
+        document.getElementById('rapidoText').innerText = "Tasker Activated! ⚙️";
+        document.getElementById('rapidoDesc').innerText = "Zero-tap mode ready...";
+        
+        // Haptic feedback if mobile supports it
+        if(navigator.vibrate) navigator.vibrate([50, 50, 50]); 
+        
+      }, holdDuration);
+    }
+
+    function endRapidoPress(e) {
+      clearTimeout(pressTimer);
+      const btn = document.getElementById('rapidoBtn');
+      
+      // Reset UI back to normal
+      setTimeout(() => {
+        btn.classList.remove('geek-mode-active');
+        document.getElementById('rapidoText').innerText = "Rapido";
+        document.getElementById('rapidoDesc').innerText = "Bike Taxi & Auto";
+      }, 500);
+
+      if (isGeekMode) {
+        // Trigger Tasker Automation (Long Press success)
+        bookRide('rapido-tasker');
+      } else {
+        // Trigger Normal Rapido (Short Tap success)
+        bookRide('rapido-normal');
+      }
+      
+      // Prevent double firing on touch devices
+      if(e && e.cancelable) e.preventDefault(); 
+    }
+
+    function cancelRapidoPress() {
+      clearTimeout(pressTimer);
+      isGeekMode = false;
+    }
+    // -------------------------------------------
 
     // App Navigation Logic
     function bookRide(app) {
@@ -304,9 +371,9 @@
           window.open("https://book.olacabs.com/", "_blank");
         }
       }
-      else if (app === 'rapido') {
+      else if (app === 'rapido-normal') {
+        // Normal User Click - Safe opening, no Tasker dependency
         if (isAndroid) {
-          // Normal Rapido fallback logic
           window.location.href = "intent://#Intent;package=com.rapido.passenger;end";
           tryManualFallback(null, "https://play.google.com/store/apps/details?id=com.rapido.passenger", true);
         } else if (isIOS) {
@@ -316,7 +383,7 @@
         }
       }
       else if (app === 'rapido-tasker') {
-        // 🔥 GEEK MODE: Trigger the Tasker automation task directly!
+        // GEEK MODE: Long Press triggered this!
         if (isAndroid) {
           const taskName = encodeURIComponent("Rapido – Go to MyHome");
           const taskerIntent = `intent://#Intent;action=net.dinglisch.android.tasker.ACTION_TASK;S.task_name=${taskName};package=net.dinglisch.android.taskerm;end`;
@@ -326,15 +393,13 @@
         }
       }
       
-      setTimeout(closeBottomSheet, 500); 
+      setTimeout(closeBottomSheet, 300); 
     }
 
-    // Manual Timer Fallback (Smart checking)
     function tryManualFallback(schemeUrl, storeUrl, isAndroidIntent = false) {
       const start = Date.now();
       
       setTimeout(() => {
-        // If 1.5s passed and page is still active, app didn't open. So go to store!
         if (Date.now() - start < 2500 && document.visibilityState !== 'hidden') {
           window.location.href = storeUrl;
         }
